@@ -1,0 +1,1673 @@
+import React, { useEffect, useState } from "react";
+import { Stepper } from "../components/Stepper";
+import Button from "../components/Button";
+import { useNavigate, useLocation } from "react-router-dom";
+import { ConfirmModal } from "../components/ConfirmModal";
+import { usePost } from "../hooks/usePost";
+import { useToast } from "../contexts/ToastContext";
+import paymentGatewayBg from "../images/login-background.jpg";
+
+export const Kyc = () => {
+  const location = useLocation();
+  const navigate = useNavigate();
+  const toast = useToast();
+
+  const [errors, setErrors] = useState({});
+  const [currentStep, setCurrentStep] = useState(1);
+  const [showConfirmModal, setShowConfirmModal] = useState(false);
+
+  const [gstLoading, setGstLoading] = useState(false);
+  const [gstVerified, setGstVerified] = useState(false);
+  const [gstCompanyName, setGstCompanyName] = useState("");
+
+  // director digilocker states
+  const [directorVerifyLoading, setDirectorVerifyLoading] = useState({});
+  const [directorVerifyStatus, setDirectorVerifyStatus] = useState({});
+  const [directorVerifyError, setDirectorVerifyError] = useState({});
+
+  const [memberFormData, setMemberFormData] = useState({
+    id: "",
+    name: "",
+    mobile_no: "",
+    email: "",
+    business_mcc: "",
+    city: "",
+    district: "",
+    state: "",
+    pin_code: "",
+    address: "",
+    company_pan_no: "",
+    company_gst_no: "",
+    cin_llpin: "",
+    account_holder_name: "",
+    bank_account_no: "",
+    ifsc_code: "",
+    website_url: "",
+    company_type: "",
+    company_name: "",
+    date_of_incorporation: "",
+    cancel_cheque_doc: null,
+    company_pan_no_doc: null,
+    company_gst_no_doc: null,
+    director_info: [
+      {
+        director_name: "",
+        director_pan_no: "",
+        director_aadhar_no: "",
+        director_gender: "",
+        director_dob: "",
+        user_pan_doc: null,
+        user_addhar_doc: null,
+      },
+    ],
+    video_kyc: null,
+    payin_at_onboard: "",
+    payout_at_onboard: "",
+    scheme_id: "",
+  });
+
+  const { execute: executeMember } = usePost("/kyc-merchant");
+
+  useEffect(() => {
+    const saved = localStorage.getItem("kycFormData");
+    const merchant =
+      location.state?.merchant || JSON.parse(localStorage.getItem("user"));
+
+    if (merchant?.id) {
+      setMemberFormData((prev) => ({
+        ...prev,
+        id: merchant.id,
+        name: merchant.name || "",
+        email: merchant.email || "",
+        mobile_no: merchant.mobile_no || "",
+      }));
+      return;
+    }
+
+    if (saved) {
+      try {
+        const parsed = JSON.parse(saved);
+        setMemberFormData((prev) => ({
+          ...prev,
+          ...parsed,
+        }));
+      } catch (e) {
+        console.error("Invalid localStorage data");
+      }
+    }
+  }, [location.state]);
+
+  useEffect(() => {
+    if (!memberFormData.id) return;
+
+    const savable = { ...memberFormData };
+    delete savable.video_kyc;
+    delete savable.company_pan_no_doc;
+    delete savable.company_gst_no_doc;
+    delete savable.cancel_cheque_doc;
+
+    savable.director_info = savable.director_info.map((d) => ({
+      director_name: d.director_name,
+      director_pan_no: d.director_pan_no,
+      director_aadhar_no: d.director_aadhar_no,
+      director_gender: d.director_gender,
+      director_dob: d.director_dob,
+    }));
+
+    localStorage.setItem("kycFormData", JSON.stringify(savable));
+  }, [memberFormData]);
+
+  const stepRequiredFields = {
+    1: [
+      "name",
+      "mobile_no",
+      "email",
+      "company_gst_no",
+      "company_gst_no_doc",
+      "address",
+      "city",
+      "state",
+      "district",
+      "pin_code",
+    ],
+    2: [
+      "business_mcc",
+      "website_url",
+      "company_pan_no",
+      "company_pan_no_doc",
+      "cin_llpin",
+      "company_type",
+      "cancel_cheque_doc",
+    ],
+    3: [
+      "director_name",
+      "director_gender",
+      "director_dob",
+      "director_pan_no",
+      "user_pan_doc",
+      "director_aadhar_no",
+      "user_addhar_doc",
+    ],
+    4: ["video_kyc"],
+  };
+
+  const handlePrev = () => {
+    if (currentStep > 1) {
+      setCurrentStep(currentStep - 1);
+    }
+  };
+
+  const nameRegex = /^[A-Za-z ]+$/;
+  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  const numberRegex = /^[0-9]{4}$/;
+  const pinnumberRegex = /^[0-9]{6}$/;
+  const aadharRegex = /^[0-9]{12}$/;
+  const gstRegex =
+    /^[0-9]{2}[A-Z]{5}[0-9]{4}[A-Z]{1}[1-9A-Z]{1}Z[0-9A-Z]{1}$/;
+  const panRegex = /^[A-Z]{5}[0-9]{4}[A-Z]{1}$/;
+  const websiteRegex =
+    /^(https?:\/\/)(www\.)?[a-zA-Z0-9-]+\.[a-zA-Z]{2,}(\/.*)?$/;
+  const cinRegex = /^[LU][0-9]{5}[A-Z]{2}[0-9]{4}[A-Z]{3}[0-9]{6}$/;
+
+  const validationRules = {
+    name: {
+      required: true,
+      pattern: nameRegex,
+      message: "Name is not valid",
+    },
+    email: {
+      required: true,
+      pattern: emailRegex,
+      message: "Email is not valid",
+    },
+    business_mcc: {
+      required: true,
+      pattern: numberRegex,
+      message: "Business MCC must be 4 digits",
+    },
+    city: {
+      required: true,
+      minLength: 2,
+      pattern: /^[A-Za-z ]+$/,
+      message: "Valid city name required",
+    },
+    state: {
+      required: true,
+      minLength: 2,
+      pattern: /^[A-Za-z ]+$/,
+      message: "Valid state name required",
+    },
+    district: {
+      required: true,
+      minLength: 2,
+      pattern: /^[A-Za-z ]+$/,
+      message: "Valid district name required",
+    },
+    address: {
+      required: true,
+      minLength: 10,
+      message: "Address must be at least 10 characters",
+    },
+    pin_code: {
+      required: true,
+      pattern: pinnumberRegex,
+      message: "Pin code must be 6 digits",
+    },
+    website_url: {
+      required: true,
+      pattern: websiteRegex,
+      message: "Website URL must be like https://example.com",
+    },
+    cin_llpin: {
+      required: true,
+      pattern: cinRegex,
+      message: "CIN is not valid (e.g. L12345MH2010PLC123456)",
+    },
+    company_pan_no: {
+      required: true,
+      pattern: panRegex,
+      message: "Company PAN is not valid (e.g. ABCDE1234F)",
+    },
+    company_gst_no: {
+      required: true,
+      pattern: gstRegex,
+      message: "GST is not valid (e.g. 27AAAPZ1234C1Z1)",
+    },
+    director_name: {
+      required: true,
+      pattern: nameRegex,
+      message: "Director name is not valid",
+    },
+    director_pan_no: {
+      required: true,
+      pattern: panRegex,
+      message: "Director PAN is not valid (e.g. ABCDE1234F)",
+    },
+    director_aadhar_no: {
+      required: true,
+      pattern: aadharRegex,
+      message: "Aadhaar must be 12 digits",
+    },
+    user_pan_doc: {
+      required: true,
+      message: "PAN document is required",
+    },
+    user_addhar_doc: {
+      required: true,
+      message: "Aadhaar document is required",
+    },
+    company_type: {
+      required: true,
+      message: "Please select company type",
+    },
+    director_gender: {
+      required: true,
+      message: "Please select gender",
+    },
+    director_dob: {
+      required: true,
+      message: "Date of birth is required",
+    },
+    video_kyc: {
+      required: true,
+      message: "Please upload your Video KYC recording",
+    },
+    company_pan_no_doc: {
+      required: true,
+      message: "Company PAN document is required",
+    },
+    company_gst_no_doc: {
+      required: true,
+      message: "GST document is required",
+    },
+    cancel_cheque_doc: {
+      required: true,
+      message: "Cancel cheque document is required",
+    },
+  };
+
+  const validateStep = () => {
+    const requiredFields = stepRequiredFields[currentStep];
+    const newErrors = {};
+
+    const validateValue = (value, field) => {
+      const rules = validationRules[field];
+
+      if (
+        value === undefined ||
+        value === null ||
+        (typeof value === "string" && value.trim() === "")
+      ) {
+        return rules?.message || "This field is required";
+      }
+
+      if (rules?.pattern && typeof value === "string") {
+        if (!rules.pattern.test(value.trim())) {
+          return rules.message || "Invalid format";
+        }
+      }
+
+      return null;
+    };
+
+    if (currentStep === 3) {
+      memberFormData.director_info.forEach((director, idx) => {
+        requiredFields.forEach((field) => {
+          const error = validateValue(director[field], field);
+
+          if (error) {
+            if (!newErrors.director) newErrors.director = [];
+            newErrors.director[idx] = {
+              ...newErrors.director[idx],
+              [field]: error,
+            };
+          }
+        });
+      });
+    } else {
+      requiredFields.forEach((field) => {
+        const value = memberFormData[field];
+        const error = validateValue(value, field);
+        if (error) {
+          newErrors[field] = error;
+        }
+      });
+    }
+
+    setErrors(newErrors);
+    return Object.keys(newErrors).length === 0;
+  };
+
+  const extractPincode = (text = "") => {
+    const match = String(text).match(/\b\d{6}\b/);
+    return match ? match[0] : "";
+  };
+
+  const splitAddressParts = (rawAddress = "") => {
+    const cleaned = String(rawAddress || "").replace(/\s+/g, " ").trim();
+    if (!cleaned) {
+      return {
+        fullAddress: "",
+        city: "",
+        district: "",
+        state: "",
+        pin_code: "",
+      };
+    }
+
+    const pin = extractPincode(cleaned);
+    const parts = cleaned
+      .split(",")
+      .map((p) => p.trim())
+      .filter(Boolean);
+
+    return {
+      fullAddress: cleaned,
+      city: parts[parts.length - 3] || "",
+      district: parts[parts.length - 2] || "",
+      state: parts[parts.length - 1]?.replace(pin, "").trim() || "",
+      pin_code: pin || "",
+    };
+  };
+
+  const getGstResultNode = (data) => {
+    return (
+      data?.api_response?.response?.result ||
+      data?.api_response?.result ||
+      data?.response?.result ||
+      data?.result ||
+      data?.data?.result ||
+      data?.data ||
+      {}
+    );
+  };
+
+  const verifyGST = async (gstNumber) => {
+    const gst = String(gstNumber || "")
+      .toUpperCase()
+      .replace(/\s/g, "")
+      .trim();
+
+    setGstVerified(false);
+    setGstCompanyName("");
+
+    if (!gstRegex.test(gst)) {
+      setErrors((prev) => ({
+        ...(prev || {}),
+        company_gst_no: "GST is not valid (e.g. 27AAAPZ1234C1Z1)",
+      }));
+      return;
+    }
+
+    setErrors((prev) => ({ ...(prev || {}), company_gst_no: "" }));
+
+    try {
+      setGstLoading(true);
+
+      const res = await fetch(
+        "https://uatfintech.spay.live/api/gst/advance-verify",
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            business_gstin_number: gst,
+            financial_year: "2023-24",
+          }),
+        }
+      );
+
+      const data = await res.json();
+
+      // if (!res.ok) {
+      //   setErrors((prev) => ({
+      //     ...(prev || {}),
+      //     company_gst_no: data?.message || "GST verification failed",
+      //   }));
+      //   return;
+      // }
+      if (!res.ok) {
+  const errorMessage = data?.message || "";
+
+  let userMessage = "GST verification failed";
+
+  // Handle timeout / server errors
+  if (
+    errorMessage.includes("cURL error 28") ||
+    errorMessage.toLowerCase().includes("timed out")
+  ) {
+    userMessage = "Something went wrong, please try again later";
+  }
+
+  setErrors((prev) => ({
+    ...(prev || {}),
+    company_gst_no: userMessage,
+  }));
+
+  return;
+}
+
+      const resultNode = getGstResultNode(data);
+
+      const legalName =
+        resultNode?.legal_name ||
+        resultNode?.trade_name ||
+        resultNode?.business_name ||
+        "";
+
+      const rawAddress =
+        resultNode?.principal_place_address ||
+        resultNode?.principal_address ||
+        resultNode?.address ||
+        resultNode?.trade_address ||
+        resultNode?.business_address ||
+        resultNode?.principalPlaceOfBusiness ||
+        resultNode?.primary_business_address?.registered_address ||
+        resultNode?.primary_business_address?.detailed_address ||
+        "";
+
+      const city =
+        resultNode?.city ||
+        resultNode?.principal_place_city ||
+        resultNode?.trade_city ||
+        "";
+
+      const district =
+        resultNode?.district ||
+        resultNode?.principal_place_district ||
+        resultNode?.trade_district ||
+        "";
+
+      const state =
+        resultNode?.state ||
+        resultNode?.principal_place_state ||
+        resultNode?.trade_state ||
+        "";
+
+      const pin_code =
+        resultNode?.pincode ||
+        resultNode?.pin_code ||
+        resultNode?.principal_place_pincode ||
+        resultNode?.trade_pincode ||
+        "";
+
+ const parsedAddress = splitAddressParts(rawAddress);
+
+// ✅ Only fix state if missing
+if (
+  !parsedAddress.state &&
+  parsedAddress.district 
+) {
+  parsedAddress.state = parsedAddress.district;
+  parsedAddress.district = parsedAddress.city || ""; // optional (keep clean)
+}
+      setGstVerified(true);
+      setGstCompanyName(String(legalName || "").trim());
+
+      setMemberFormData((prev) => ({
+        ...prev,
+        company_gst_no: gst,
+        company_name: String(legalName || "").trim() || prev.company_name,
+        address: rawAddress || prev.address || parsedAddress.fullAddress,
+        city: city || prev.city || parsedAddress.city,
+        district: district || prev.district || parsedAddress.district,
+        state: state || prev.state || parsedAddress.state,
+        pin_code: pin_code || prev.pin_code || parsedAddress.pin_code,
+      }));
+
+      toast.success("GST Verified and address fetched ✅");
+    } catch (err) {
+      setErrors((prev) => ({
+        ...(prev || {}),
+        company_gst_no: "Network error / server issue",
+      }));
+    } finally {
+      setGstLoading(false);
+    }
+  };
+
+  const verifyDirectorDigilocker = async (index) => {
+    const director = memberFormData.director_info[index];
+
+    const pan = String(director?.director_pan_no || "")
+      .toUpperCase()
+      .trim();
+
+    const aadhaar = String(director?.director_aadhar_no || "").trim();
+
+    if (!panRegex.test(pan)) {
+      setErrors((prev) => {
+        const updated = { ...prev };
+        if (!updated.director) updated.director = [];
+        updated.director[index] = {
+          ...(updated.director?.[index] || {}),
+          director_pan_no: "Director PAN is not valid (e.g. ABCDE1234F)",
+        };
+        return updated;
+      });
+      return;
+    }
+
+    if (!aadharRegex.test(aadhaar)) {
+      setErrors((prev) => {
+        const updated = { ...prev };
+        if (!updated.director) updated.director = [];
+        updated.director[index] = {
+          ...(updated.director?.[index] || {}),
+          director_aadhar_no: "Aadhaar must be 12 digits",
+        };
+        return updated;
+      });
+      return;
+    }
+
+    setDirectorVerifyLoading((prev) => ({ ...prev, [index]: true }));
+    setDirectorVerifyStatus((prev) => ({ ...prev, [index]: "" }));
+    setDirectorVerifyError((prev) => ({ ...prev, [index]: "" }));
+
+    try {
+      const res = await fetch(
+        "https://uatfintech.spay.live/api/digilocker/init-aadhaar-pan",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Accept: "application/json",
+          },
+          body: JSON.stringify({
+            director_pan_no: pan,
+            director_aadhar_no: aadhaar,
+          }),
+        }
+      );
+
+      const data = await res.json();
+
+      if (!res.ok) {
+        const msg =
+          data?.message ||
+          data?.error ||
+          "DigiLocker verification failed";
+        setDirectorVerifyError((prev) => ({ ...prev, [index]: msg }));
+        return;
+      }
+
+      const successMsg =
+        data?.message ||
+        data?.data?.message ||
+        data?.status ||
+        "DigiLocker verification initialized successfully";
+
+      setDirectorVerifyStatus((prev) => ({
+        ...prev,
+        [index]: successMsg,
+      }));
+
+      toast.success(`Director ${index + 1} DigiLocker verify started ✅`);
+    } catch (error) {
+      setDirectorVerifyError((prev) => ({
+        ...prev,
+        [index]: "Network error / server issue",
+      }));
+    } finally {
+      setDirectorVerifyLoading((prev) => ({ ...prev, [index]: false }));
+    }
+  };
+
+  const handleNext = () => {
+    if (validateStep()) {
+      if (currentStep < 4) {
+        setCurrentStep(currentStep + 1);
+      }
+    }
+  };
+
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+
+    setMemberFormData((prev) => ({
+      ...prev,
+      [name]: value,
+    }));
+
+    setErrors((prev) => ({
+      ...prev,
+      [name]: "",
+    }));
+  };
+
+  const handleDirectorChange = (index, e) => {
+    const { name, value } = e.target;
+
+    setMemberFormData((prev) => {
+      const updatedDirectors = [...prev.director_info];
+      updatedDirectors[index] = {
+        ...updatedDirectors[index],
+        [name]:
+          name === "director_pan_no"
+            ? value.toUpperCase()
+            : name === "director_aadhar_no"
+            ? value.replace(/\D/g, "").slice(0, 12)
+            : value,
+      };
+      return { ...prev, director_info: updatedDirectors };
+    });
+
+    setErrors((prev) => {
+      const updated = { ...prev };
+      if (!updated.director) updated.director = [];
+      updated.director[index] = {
+        ...(updated.director?.[index] || {}),
+        [name]: "",
+      };
+      return updated;
+    });
+
+    setDirectorVerifyStatus((prev) => ({ ...prev, [index]: "" }));
+    setDirectorVerifyError((prev) => ({ ...prev, [index]: "" }));
+  };
+
+  const addDirector = () => {
+    setMemberFormData((prev) => ({
+      ...prev,
+      director_info: [
+        ...prev.director_info,
+        {
+          director_name: "",
+          director_gender: "",
+          director_pan_no: "",
+          director_aadhar_no: "",
+          user_pan_doc: null,
+          user_addhar_doc: null,
+          director_dob: "",
+        },
+      ],
+    }));
+  };
+
+  const removeDirector = (index) => {
+    setMemberFormData((prev) => ({
+      ...prev,
+      director_info: prev.director_info.filter((_, i) => i !== index),
+    }));
+
+    setDirectorVerifyLoading((prev) => {
+      const updated = { ...prev };
+      delete updated[index];
+      return updated;
+    });
+
+    setDirectorVerifyStatus((prev) => {
+      const updated = { ...prev };
+      delete updated[index];
+      return updated;
+    });
+
+    setDirectorVerifyError((prev) => {
+      const updated = { ...prev };
+      delete updated[index];
+      return updated;
+    });
+  };
+
+  const handleCompanyFileChange = (e) => {
+    const { name, files } = e.target;
+    const file = files?.[0];
+
+    if (!file) {
+      setMemberFormData((prev) => ({ ...prev, [name]: null }));
+      return;
+    }
+
+    if (file.type !== "application/pdf") {
+      toast.error(`Only PDF files are allowed for ${name.replace(/_/g, " ")}`);
+      e.target.value = "";
+      return;
+    }
+
+    if (file.size > 5 * 1024 * 1024) {
+      toast.error("File size should be less than 5MB");
+      e.target.value = "";
+      return;
+    }
+
+    setMemberFormData((prev) => ({
+      ...prev,
+      [name]: file,
+    }));
+
+    setErrors((prev) => ({
+      ...prev,
+      [name]: "",
+    }));
+  };
+
+  const handleDirectorFileChange = (index, e) => {
+    const { name, files } = e.target;
+    const file = files?.[0];
+
+    if (!file) return;
+
+    if (file.type !== "application/pdf") {
+      toast.error("Only PDF files are allowed!");
+      e.target.value = "";
+      return;
+    }
+
+    if (file.size > 5 * 1024 * 1024) {
+      toast.error("File size must be under 5MB");
+      e.target.value = "";
+      return;
+    }
+
+    setMemberFormData((prev) => {
+      const updated = [...prev.director_info];
+      updated[index][name] = file;
+      return { ...prev, director_info: updated };
+    });
+
+    setErrors((prev) => {
+      const updatedErrors = { ...prev };
+      if (!updatedErrors.director) updatedErrors.director = [];
+      updatedErrors.director[index] = {
+        ...(updatedErrors.director?.[index] || {}),
+        [name]: "",
+      };
+      return updatedErrors;
+    });
+  };
+
+  const handleVideoChange = (e) => {
+    const file = e.target.files[0];
+    if (file && file.type.startsWith("video/")) {
+      setMemberFormData((prev) => ({ ...prev, video_kyc: file }));
+      setErrors((prev) => ({ ...prev, video_kyc: null }));
+    } else {
+      toast.error("Please upload a valid video file");
+    }
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+
+    if (!validateStep()) return;
+
+    try {
+      const formData = new FormData();
+
+      const merchantId = memberFormData.id;
+      if (!merchantId) {
+        toast.error("Merchant ID missing – cannot submit KYC");
+        return;
+      }
+
+      formData.append("id", merchantId);
+
+      Object.keys(memberFormData).forEach((key) => {
+        if (
+          ![
+            "director_info",
+            "company_pan_no_doc",
+            "company_gst_no_doc",
+            "cancel_cheque_doc",
+            "video_kyc",
+          ].includes(key)
+        ) {
+          formData.append(key, memberFormData[key] ?? "");
+        }
+      });
+
+      ["company_pan_no_doc", "company_gst_no_doc", "cancel_cheque_doc"].forEach(
+        (fileKey) => {
+          if (memberFormData[fileKey] instanceof File) {
+            formData.append(fileKey, memberFormData[fileKey]);
+          }
+        }
+      );
+
+      if (memberFormData.video_kyc instanceof File) {
+        formData.append("video_kyc", memberFormData.video_kyc);
+      }
+
+      memberFormData.director_info.forEach((director, idx) => {
+        Object.keys(director).forEach((field) => {
+          const value = director[field];
+          if (value instanceof File) {
+            formData.append(`director_info[${idx}][${field}]`, value);
+          } else {
+            formData.append(`director_info[${idx}][${field}]`, value ?? "");
+          }
+        });
+      });
+
+      await executeMember(formData);
+      toast.success("Form submitted successfully!");
+      navigate("/member-list");
+    } catch (err) {
+      const backendErrors = err?.response?.data?.errors;
+      const msg = backendErrors
+        ? Object.values(backendErrors)[0][0]
+        : err?.response?.data?.message || "Something went wrong";
+      toast.error(msg);
+    }
+  };
+
+  const stepHeadings = {
+    1: {
+      title: "Merchant Details",
+      subtitle: "Basic business information",
+    },
+    2: {
+      title: "Business & Company Details",
+      subtitle: "Business and legal information",
+    },
+    3: {
+      title: "Director Details",
+      subtitle: "Director KYC information",
+    },
+    4: {
+      title: "Video KYC",
+      subtitle: "Video KYC information",
+    },
+  };
+
+  return (
+    <>
+      <div
+        className="min-h-screen w-screen bg-cover bg-center bg-no-repeat"
+        style={{ backgroundImage: `url(${paymentGatewayBg})` }}
+      >
+        <div className="absolute inset-0 bg-black/30" />
+
+        <div className="relative z-10 min-h-screen flex items-center justify-center p-4">
+          <div className="w-full max-w-5xl">
+            <div className="shadow-2xl overflow-hidden">
+              <div className="w-full max-w-3xl mx-auto rounded-2xl bg-white p-8">
+                <div className="relative mb-10">
+                  <div
+                    className="absolute inset-0 rounded-xl blur-md opacity-70"
+                    style={{
+                      background:
+                        "linear-gradient(120deg, #2958da, #2F5BFF, #6A8CFF)",
+                    }}
+                  />
+
+                  <div
+                    className="relative rounded-xl px-6 py-4 flex items-center justify-between"
+                    style={{
+                      background:
+                        "linear-gradient(275deg, #4b76eb, #1E40FF, #4F6FFF)",
+                    }}
+                  >
+                    <h4 className="text-2xl md:text-2xl font-bold text-white tracking-wide ml-52">
+                      Complete Your KYC
+                    </h4>
+                    <Stepper currentStep={currentStep} />
+                  </div>
+                </div>
+
+                <div className="border-b pb-3 mb-6">
+                  <h2 className="text-xl font-semibold text-gray-800 mt-6 text-center">
+                    {stepHeadings[currentStep].title}
+                  </h2>
+                </div>
+
+                <form onSubmit={handleSubmit} encType="multipart/form-data">
+                  {currentStep === 1 && (
+                    <div className="space-y-4 mb-8">
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div>
+                          <label className="block mb-1 text-xs font-semibold text-gray-600 tracking-wide ml-2">
+                            Business Name <span className="text-red-600">*</span>
+                          </label>
+                          <input
+                            name="name"
+                            readOnly
+                            value={memberFormData.name || ""}
+                            className="w-full px-3 py-2 rounded-lg border border-gray-300 bg-gray-100 cursor-not-allowed"
+                          />
+                          {errors?.name && (
+                            <p className="text-red-600 text-xs mt-1">{errors.name}</p>
+                          )}
+                        </div>
+
+                        <div>
+                          <label className="block mb-1 text-xs font-semibold text-gray-600 tracking-wide ml-2">
+                            Business Mobile <span className="text-red-600">*</span>
+                          </label>
+                          <input
+                            name="mobile_no"
+                            readOnly
+                            value={memberFormData.mobile_no || ""}
+                            className="w-full px-3 py-2 rounded-lg border border-gray-300 bg-gray-100 cursor-not-allowed"
+                          />
+                          {errors?.mobile_no && (
+                            <p className="text-red-600 text-xs mt-1">
+                              {errors.mobile_no}
+                            </p>
+                          )}
+                        </div>
+
+                        <div>
+                          <label className="block mb-1 text-xs font-semibold text-gray-600 tracking-wide ml-2">
+                            Business Email <span className="text-red-600">*</span>
+                          </label>
+                          <input
+                            name="email"
+                            readOnly
+                            value={memberFormData.email || ""}
+                            className="w-full px-3 py-2 rounded-lg border border-gray-300 bg-gray-100 cursor-not-allowed"
+                          />
+                          {errors?.email && (
+                            <p className="text-red-600 text-xs mt-1">{errors.email}</p>
+                          )}
+                        </div>
+
+                        <div>
+                          <label className="block mb-1 text-xs font-semibold text-gray-600 ml-2">
+                            GST Number <span className="text-red-600">*</span>
+                          </label>
+                          <input
+                            name="company_gst_no"
+                            value={memberFormData.company_gst_no || ""}
+                            maxLength={15}
+                            readOnly={gstVerified}
+                            disabled={gstVerified}
+                            onChange={(e) => {
+                              const value = e.target.value
+                                .toUpperCase()
+                                .replace(/\s/g, "");
+
+                              setMemberFormData((prev) => ({
+                                ...prev,
+                                company_gst_no: value,
+                              }));
+
+                              setErrors((prev) => ({
+                                ...(prev || {}),
+                                company_gst_no: "",
+                              }));
+
+                              setGstVerified(false);
+                              setGstCompanyName("");
+
+                              if (value.length === 15) verifyGST(value);
+                            }}
+                            className={`w-full px-3 py-2 rounded-lg border border-gray-300 focus:outline-none focus:ring-1 focus:ring-[#375EF4] ${
+                              gstVerified ? "bg-gray-100 cursor-not-allowed" : ""
+                            }`}
+                          />
+
+                          {gstLoading && (
+                            <p className="text-blue-600 text-xs mt-1">
+                              Verifying GST...
+                            </p>
+                          )}
+
+                          {gstVerified && !gstLoading && (
+                            <div className="mt-2 p-2 rounded-lg bg-green-50 border border-green-200">
+                              <p className="text-xs text-gray-600">
+                                Company Name (as per GST):
+                              </p>
+                              <p className="text-sm font-semibold text-green-700">
+                                {gstCompanyName || "Company name not returned by API"}
+                              </p>
+                            </div>
+                          )}
+
+                          {errors?.company_gst_no && (
+                            <p className="text-red-600 text-xs mt-1">
+                              {errors.company_gst_no}
+                            </p>
+                          )}
+                        </div>
+
+                        <div>
+                          <label className="block mb-1 text-xs font-semibold text-gray-600 tracking-wide ml-2">
+                            Address <span className="text-red-600">*</span>
+                          </label>
+                          <input
+                            name="address"
+                            value={memberFormData.address || ""}
+                            onChange={handleChange}
+                            className="w-full px-3 py-2 rounded-lg border border-gray-300 focus:outline-none focus:ring-1 focus:ring-[#375EF4]"
+                          />
+                          {errors?.address && (
+                            <p className="text-red-600 text-xs mt-1">
+                              {errors.address}
+                            </p>
+                          )}
+                        </div>
+
+                        <div>
+                          <label className="block mb-1 text-xs font-semibold text-gray-600 tracking-wide ml-2">
+                            City <span className="text-red-600">*</span>
+                          </label>
+                          <input
+                            name="city"
+                            value={memberFormData.city || ""}
+                            onChange={handleChange}
+                            className="w-full px-3 py-2 rounded-lg border border-gray-300 focus:outline-none focus:ring-1 focus:ring-[#375EF4]"
+                          />
+                          {errors?.city && (
+                            <p className="text-red-600 text-xs mt-1">{errors.city}</p>
+                          )}
+                        </div>
+
+                        <div>
+                          <label className="block mb-1 text-xs font-semibold text-gray-600 tracking-wide ml-2">
+                            State <span className="text-red-600">*</span>
+                          </label>
+                          <input
+                            name="state"
+                            value={memberFormData.state || ""}
+                            onChange={handleChange}
+                            className="w-full px-3 py-2 rounded-lg border border-gray-300 focus:outline-none focus:ring-1 focus:ring-[#375EF4]"
+                          />
+                          {errors?.state && (
+                            <p className="text-red-600 text-xs mt-1">{errors.state}</p>
+                          )}
+                        </div>
+
+                        <div>
+                          <label className="block mb-1 text-xs font-semibold text-gray-600 tracking-wide ml-2">
+                            District <span className="text-red-600">*</span>
+                          </label>
+                          <input
+                            name="district"
+                            value={memberFormData.district || ""}
+                            onChange={handleChange}
+                            className="w-full px-3 py-2 rounded-lg border border-gray-300 focus:outline-none focus:ring-1 focus:ring-[#375EF4]"
+                          />
+                          {errors?.district && (
+                            <p className="text-red-600 text-xs mt-1">
+                              {errors.district}
+                            </p>
+                          )}
+                        </div>
+
+                        <div>
+                          <label className="block mb-1 text-xs font-semibold text-gray-600 tracking-wide ml-2">
+                            Pincode <span className="text-red-600">*</span>
+                          </label>
+                          <input
+                            name="pin_code"
+                            value={memberFormData.pin_code || ""}
+                            onChange={handleChange}
+                            className="w-full px-3 py-2 rounded-lg border border-gray-300 focus:outline-none focus:ring-1 focus:ring-[#375EF4]"
+                          />
+                          {errors?.pin_code && (
+                            <p className="text-red-600 text-xs mt-1">
+                              {errors.pin_code}
+                            </p>
+                          )}
+                        </div>
+
+                        <div>
+                          <label className="block mb-1 text-xs font-semibold text-gray-600 ml-2">
+                            GST Document <span className="text-red-600">*</span>
+                          </label>
+
+                          <input
+                            type="text"
+                            readOnly
+                            placeholder="Upload GST document"
+                            value={memberFormData.company_gst_no_doc?.name || ""}
+                            className="w-full px-3 py-2 rounded-lg border border-gray-300 cursor-pointer bg-white focus:outline-none focus:ring-1 focus:ring-[#375EF4]"
+                            onClick={() =>
+                              document.getElementById("company_gst_no_doc").click()
+                            }
+                          />
+
+                          <input
+                            id="company_gst_no_doc"
+                            name="company_gst_no_doc"
+                            type="file"
+                            accept="application/pdf"
+                            className="hidden"
+                            onChange={handleCompanyFileChange}
+                          />
+
+                          {errors?.company_gst_no_doc && (
+                            <p className="text-red-600 text-xs mt-1">
+                              {errors.company_gst_no_doc}
+                            </p>
+                          )}
+                        </div>
+                      </div>
+                    </div>
+                  )}
+
+                  {currentStep === 2 && (
+                    <div className="space-y-4 mb-6">
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div>
+                          <label className="block mb-1 text-xs font-semibold text-gray-600 ml-2">
+                            Business MCC <span className="text-red-600">*</span>
+                          </label>
+                          <input
+                            name="business_mcc"
+                            value={memberFormData.business_mcc || ""}
+                            onChange={handleChange}
+                            className="w-full px-3 py-2 rounded-lg border border-gray-300 focus:outline-none focus:ring-1 focus:ring-[#375EF4]"
+                          />
+                          {errors?.business_mcc && (
+                            <p className="text-red-600 text-xs mt-1">
+                              {errors.business_mcc}
+                            </p>
+                          )}
+                        </div>
+
+                        <div>
+                          <label className="block mb-1 text-xs font-semibold text-gray-600 ml-2">
+                            Website URL <span className="text-red-600">*</span>
+                          </label>
+                          <input
+                            name="website_url"
+                            value={memberFormData.website_url || ""}
+                            onChange={handleChange}
+                            className="w-full px-3 py-2 rounded-lg border border-gray-300 focus:outline-none focus:ring-1 focus:ring-[#375EF4]"
+                          />
+                          {errors?.website_url && (
+                            <p className="text-red-600 text-xs mt-1">
+                              {errors.website_url}
+                            </p>
+                          )}
+                        </div>
+
+                        <div>
+                          <label className="block mb-1 text-xs font-semibold text-gray-600 ml-2">
+                            Company PAN Number <span className="text-red-600">*</span>
+                          </label>
+                          <input
+                            name="company_pan_no"
+                            value={memberFormData.company_pan_no || ""}
+                            onChange={(e) =>
+                              setMemberFormData((prev) => ({
+                                ...prev,
+                                company_pan_no: e.target.value.toUpperCase(),
+                              }))
+                            }
+                            className="w-full px-3 py-2 rounded-lg border border-gray-300 focus:outline-none focus:ring-1 focus:ring-[#375EF4]"
+                          />
+                          {errors?.company_pan_no && (
+                            <p className="text-red-600 text-xs mt-1">
+                              {errors.company_pan_no}
+                            </p>
+                          )}
+                        </div>
+
+                        <div>
+                          <label className="block mb-1 text-xs font-semibold text-gray-600 ml-2">
+                            Company PAN Document{" "}
+                            <span className="text-red-600">*</span>
+                          </label>
+
+                          <input
+                            type="text"
+                            readOnly
+                            placeholder="Upload PAN document"
+                            value={memberFormData.company_pan_no_doc?.name || ""}
+                            className="w-full px-3 py-2 rounded-lg border border-gray-300 cursor-pointer bg-white focus:outline-none focus:ring-1 focus:ring-[#375EF4]"
+                            onClick={() =>
+                              document.getElementById("company_pan_no_doc").click()
+                            }
+                          />
+
+                          <input
+                            id="company_pan_no_doc"
+                            name="company_pan_no_doc"
+                            type="file"
+                            accept="application/pdf"
+                            className="hidden"
+                            onChange={handleCompanyFileChange}
+                          />
+
+                          {errors?.company_pan_no_doc && (
+                            <p className="text-red-600 text-xs mt-1">
+                              {errors.company_pan_no_doc}
+                            </p>
+                          )}
+                        </div>
+
+                        <div>
+                          <label className="block mb-1 text-xs font-semibold text-gray-600 ml-2">
+                            CIN / LLPIN <span className="text-red-600">*</span>
+                          </label>
+                          <input
+                            name="cin_llpin"
+                            value={memberFormData.cin_llpin || ""}
+                            onChange={handleChange}
+                            className="w-full px-3 py-2 rounded-lg border border-gray-300 focus:outline-none focus:ring-1 focus:ring-[#375EF4]"
+                          />
+                          {errors?.cin_llpin && (
+                            <p className="text-red-600 text-xs mt-1">
+                              {errors.cin_llpin}
+                            </p>
+                          )}
+                        </div>
+
+                        <div>
+                          <label className="block mb-1 text-xs font-semibold text-gray-600 ml-2">
+                            Company Type <span className="text-red-600">*</span>
+                          </label>
+                          <select
+                            name="company_type"
+                            value={memberFormData.company_type || ""}
+                            onChange={handleChange}
+                            className="w-full px-3 py-2 rounded-lg border border-gray-300 bg-white focus:outline-none focus:ring-1 focus:ring-[#375EF4]"
+                          >
+                            <option value="">Select</option>
+                            <option value="private">Private</option>
+                            <option value="public">Public</option>
+                            <option value="llp">LLP</option>
+                          </select>
+                          {errors?.company_type && (
+                            <p className="text-red-600 text-xs mt-1">
+                              {errors.company_type}
+                            </p>
+                          )}
+                        </div>
+
+                        <div>
+                          <label className="block mb-1 text-xs font-semibold text-gray-600 ml-2">
+                            Cancel Cheque <span className="text-red-600">*</span>
+                          </label>
+
+                          <input
+                            type="text"
+                            readOnly
+                            placeholder="Upload cancel cheque"
+                            value={memberFormData.cancel_cheque_doc?.name || ""}
+                            className="w-full px-3 py-2 rounded-lg border border-gray-300 cursor-pointer bg-white focus:outline-none focus:ring-1 focus:ring-[#375EF4]"
+                            onClick={() =>
+                              document.getElementById("cancel_cheque_doc").click()
+                            }
+                          />
+
+                          <input
+                            id="cancel_cheque_doc"
+                            name="cancel_cheque_doc"
+                            type="file"
+                            accept="application/pdf"
+                            className="hidden"
+                            onChange={handleCompanyFileChange}
+                          />
+
+                          {errors?.cancel_cheque_doc && (
+                            <p className="text-red-600 text-xs mt-1">
+                              {errors.cancel_cheque_doc}
+                            </p>
+                          )}
+                        </div>
+                      </div>
+                    </div>
+                  )}
+
+                  {currentStep === 3 && (
+                    <div className="space-y-6 mb-6">
+                      {memberFormData?.director_info?.map((director, index) => (
+                        <div
+                          key={index}
+                          className="border border-gray-200 rounded-2xl p-5 space-y-4"
+                        >
+                          <div className="flex justify-between items-center ">
+                            <h3 className="text-base font-semibold text-gray-700 mb-3 mt-4">
+                              Director {index + 1}<br/>
+                             <span className="text-red-800 bg-red-500/20 block mt-2 p-2 rounded-xl text-sm font-medium shadow-[0_0_6px_rgba(255,0,0,0.4)]">
+                              <b >note:</b> <br/>
+                              <div className="mt-2">
+                               step 1: click verify Pan + Aadhaar button to auto fetch director details.</div>
+                                <div className="mt-2">step 2: After completion of submit redirect back to this page. </div>
+
+                               </span>
+
+                            </h3>
+
+                            {index > 0 && (
+                              <button
+                                type="button"
+                                onClick={() => removeDirector(index)}
+                                className="text-red-600 text-sm font-semibold"
+                              >
+                                <i className="fa-solid fa-trash"></i> Remove
+                              </button>
+                            )}
+                          </div>
+
+                          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <div>
+                             
+                              <label className="block mb-1 text-xs font-semibold text-gray-600 ml-2">
+                                Director Name <span className="text-red-600">*</span>
+                              </label>
+                              <input
+                                name="director_name"
+                                value={director.director_name || ""}
+                                onChange={(e) => handleDirectorChange(index, e)}
+                                className="w-full px-3 py-2 rounded-lg border border-gray-300 focus:outline-none focus:ring-1 focus:ring-[#375EF4]"
+                              />
+                              {errors?.director?.[index]?.director_name && (
+                                <p className="text-red-600 text-xs mt-1">
+                                  {errors.director[index].director_name}
+                                </p>
+                              )}
+                            </div>
+
+                            <div>
+                              <label className="block mb-1 text-xs font-semibold text-gray-600 ml-2">
+                                Gender <span className="text-red-600">*</span>
+                              </label>
+                              <select
+                                name="director_gender"
+                                value={director.director_gender || ""}
+                                onChange={(e) => handleDirectorChange(index, e)}
+                                className="w-full px-3 py-2 rounded-lg border border-gray-300 bg-white focus:outline-none focus:ring-1 focus:ring-[#375EF4]"
+                              >
+                                <option value="">Select Gender</option>
+                                <option value="male">Male</option>
+                                <option value="female">Female</option>
+                                <option value="other">Other</option>
+                              </select>
+                              {errors?.director?.[index]?.director_gender && (
+                                <p className="text-red-600 text-xs mt-1">
+                                  {errors.director[index].director_gender}
+                                </p>
+                              )}
+                            </div>
+
+                            <div>
+                              <label className="block mb-1 text-xs font-semibold text-gray-600 ml-2">
+                                Date of Birth <span className="text-red-600">*</span>
+                              </label>
+                              <input
+                                type="date"
+                                name="director_dob"
+                                value={director.director_dob || ""}
+                                onChange={(e) => handleDirectorChange(index, e)}
+                                className="w-full px-3 py-2 rounded-lg border border-gray-300 focus:outline-none focus:ring-1 focus:ring-[#375EF4]"
+                              />
+                              {errors?.director?.[index]?.director_dob && (
+                                <p className="text-red-600 text-xs mt-1">
+                                  {errors.director[index].director_dob}
+                                </p>
+                              )}
+                            </div>
+
+                            <div>
+                              <label className="block mb-1 text-xs font-semibold text-gray-600 ml-2">
+                                PAN Number <span className="text-red-600">*</span>
+                              </label>
+                              <input
+                                name="director_pan_no"
+                                value={director.director_pan_no || ""}
+                                onChange={(e) => handleDirectorChange(index, e)}
+                                maxLength={10}
+                                className="w-full px-3 py-2 rounded-lg border border-gray-300 focus:outline-none focus:ring-1 focus:ring-[#375EF4]"
+                              />
+                              {errors?.director?.[index]?.director_pan_no && (
+                                <p className="text-red-600 text-xs mt-1">
+                                  {errors.director[index].director_pan_no}
+                                </p>
+                              )}
+                            </div>
+
+                            <div>
+                              <label className="block mb-1 text-xs font-semibold text-gray-600 ml-2">
+                                PAN Document <span className="text-red-600">*</span>
+                              </label>
+
+                              <input
+                                type="text"
+                                readOnly
+                                value={director.user_pan_doc?.name || ""}
+                                placeholder="Upload PAN document"
+                                className="w-full px-3 py-2 rounded-lg border border-gray-300 bg-white cursor-pointer focus:outline-none focus:ring-1 focus:ring-[#375EF4]"
+                                onClick={() =>
+                                  document
+                                    .getElementById(`director-pan-${index}`)
+                                    .click()
+                                }
+                              />
+
+                              <input
+                                id={`director-pan-${index}`}
+                                name="user_pan_doc"
+                                type="file"
+                                accept="application/pdf"
+                                className="hidden"
+                                onChange={(e) =>
+                                  handleDirectorFileChange(index, e)
+                                }
+                              />
+
+                              {errors?.director?.[index]?.user_pan_doc && (
+                                <p className="text-red-600 text-xs mt-1">
+                                  {errors.director[index].user_pan_doc}
+                                </p>
+                              )}
+                            </div>
+
+                            <div>
+                              <label className="block mb-1 text-xs font-semibold text-gray-600 ml-2">
+                                Aadhaar Number <span className="text-red-600">*</span>
+                              </label>
+                              <input
+                                name="director_aadhar_no"
+                                value={director.director_aadhar_no || ""}
+                                onChange={(e) => handleDirectorChange(index, e)}
+                                maxLength={12}
+                                className="w-full px-3 py-2 rounded-lg border border-gray-300 focus:outline-none focus:ring-1 focus:ring-[#375EF4]"
+                              />
+                              {errors?.director?.[index]?.director_aadhar_no && (
+                                <p className="text-red-600 text-xs mt-1">
+                                  {errors.director[index].director_aadhar_no}
+                                </p>
+                              )}
+                            </div>
+
+                            <div>
+                              <label className="block mb-1 text-xs font-semibold text-gray-600 ml-2">
+                                Aadhaar Document <span className="text-red-600">*</span>
+                              </label>
+
+                              <input
+                                type="text"
+                                readOnly
+                                value={director.user_addhar_doc?.name || ""}
+                                placeholder="Upload Aadhaar document"
+                                className="w-full px-3 py-2 rounded-lg border border-gray-300 bg-white cursor-pointer focus:outline-none focus:ring-1 focus:ring-[#375EF4]"
+                                onClick={() =>
+                                  document
+                                    .getElementById(`director-aadhaar-${index}`)
+                                    .click()
+                                }
+                              />
+
+                              <input
+                                id={`director-aadhaar-${index}`}
+                                name="user_addhar_doc"
+                                type="file"
+                                accept="application/pdf"
+                                className="hidden"
+                                onChange={(e) =>
+                                  handleDirectorFileChange(index, e)
+                                }
+                              />
+
+                              {errors?.director?.[index]?.user_addhar_doc && (
+                                <p className="text-red-600 text-xs mt-1">
+                                  {errors.director[index].user_addhar_doc}
+                                </p>
+                              )}
+                            </div>
+                          </div>
+
+                          <div className="flex items-center gap-3 pt-2 flex-wrap">
+                            <button
+                              type="button"
+                              onClick={() => verifyDirectorDigilocker(index)}
+                              disabled={directorVerifyLoading[index]}
+                              className={`px-4 py-2 rounded-lg text-sm font-medium text-white ${
+                                directorVerifyLoading[index]
+                                  ? "bg-gray-400 cursor-not-allowed"
+                                  : "bg-green-600 hover:bg-green-700"
+                              }`}
+                            >
+                              {directorVerifyLoading[index]
+                                ? "Verifying..."
+                                : "Verify PAN + Aadhaar"}
+                            </button>
+
+                            {directorVerifyStatus[index] && (
+                              <p className="text-green-700 text-sm font-medium">
+                                {directorVerifyStatus[index]}
+                              </p>
+                            )}
+
+                            {directorVerifyError[index] && (
+                              <p className="text-red-600 text-sm font-medium">
+                                {directorVerifyError[index]}
+                              </p>
+                            )}
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  )}
+
+                  {currentStep === 4 && (
+                    <div className="space-y-6 mb-6">
+                      <p className="text-sm text-gray-600 text-center max-w-2xl mx-auto">
+                        Please upload a short video for identity verification.
+                        Make sure your face and PAN card are clearly visible and
+                        the video is recorded in good lighting.
+                      </p>
+
+                      <div className="border border-gray-200 rounded-2xl p-5 bg-gray-50 max-w-3xl mx-auto">
+                        <ul className="list-disc list-inside space-y-2 text-sm text-gray-700">
+                          <li>Look straight into the camera and say your full name</li>
+                          <li>Ensure proper lighting and clear audio</li>
+                          <li>Video size should be reasonable (recommended under 50MB)</li>
+                        </ul>
+                      </div>
+
+                      <div className="border-2 border-dashed border-gray-300 rounded-xl p-6 text-center transition hover:border-blue-500 hover:bg-blue-50 max-w-3xl mx-auto">
+                        <input
+                          type="file"
+                          accept="video/*"
+                          onChange={handleVideoChange}
+                          className="hidden"
+                          id="video_kyc_upload"
+                        />
+
+                        <label
+                          htmlFor="video_kyc_upload"
+                          className="cursor-pointer block w-full py-3 px-4 bg-white border border-gray-300 rounded-lg transition hover:border-blue-500 hover:bg-blue-50 focus-within:border-blue-600"
+                        >
+                          <div className="text-base font-medium text-gray-700">
+                            {memberFormData.video_kyc
+                              ? memberFormData.video_kyc.name
+                              : "Choose video file"}
+                          </div>
+
+                          <div className="text-xs text-gray-500 mt-1">
+                            {memberFormData.video_kyc
+                              ? "Click to change video"
+                              : "MP4, MOV or other video formats"}
+                          </div>
+                        </label>
+
+                        {errors?.video_kyc && (
+                          <p className="mt-3 text-sm text-red-600">
+                            {errors.video_kyc}
+                          </p>
+                        )}
+
+                        {memberFormData.video_kyc && (
+                          <div className="mt-5">
+                            <p className="text-xs font-semibold text-gray-600 mb-2">
+                              Video Preview
+                            </p>
+
+                            <video
+                              src={URL.createObjectURL(memberFormData.video_kyc)}
+                              controls
+                              className="max-w-full h-auto rounded-lg shadow-md mx-auto max-h-72 border border-gray-300"
+                            />
+                          </div>
+                        )}
+                      </div>
+                    </div>
+                  )}
+
+                  <div className="flex justify-between">
+                    <div>
+                      <button
+                        type="button"
+                        className={`text-white font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 text-center mr-3 ${
+                          currentStep === 1
+                            ? "disabled bg-gray-500 cursor-not-allowed"
+                            : "bg-blue-500 hover:bg-blue-800 cursor-pointer"
+                        }`}
+                        onClick={handlePrev}
+                      >
+                        &lt; Prev
+                      </button>
+
+                      {currentStep < 4 && (
+                        <button
+                          type="button"
+                          className="text-white bg-blue-600 hover:bg-blue-800 font-medium rounded-lg text-sm px-5 py-2.5"
+                          onClick={handleNext}
+                        >
+                          Next &gt;
+                        </button>
+                      )}
+
+                      {currentStep === 4 && (
+                        <button
+                          type="submit"
+                          className="cursor-pointer text-white bg-blue-600 hover:bg-blue-800 font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 text-center"
+                        >
+                          Submit
+                        </button>
+                      )}
+                    </div>
+
+                    <div className="flex justify-between">
+                      {currentStep === 3 && (
+                        <Button
+                          type="button"
+                          onClick={addDirector}
+                          className="cursor-pointer px-4 py-2 mr-2 bg-blue-600 text-white rounded-lg hover:bg-blue-800"
+                        >
+                          + Add Director
+                        </Button>
+                      )}
+
+                      <Button
+                        onClick={() => setShowConfirmModal(!showConfirmModal)}
+                        type="button"
+                        className="cursor-pointer text-white bg-blue-600 hover:bg-blue-800 font-medium rounded-lg text-sm px-5 py-2.5"
+                      >
+                        Cancel KYC
+                      </Button>
+                    </div>
+                  </div>
+                </form>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <ConfirmModal
+        showConfirmModal={showConfirmModal}
+        heading={"Are you sure you want to go back?"}
+        body={"If you go back then you will lose your filled data in form...."}
+        handleConfirmModal={setShowConfirmModal}
+        action={() => navigate("/")}
+      />
+    </>
+  );
+};

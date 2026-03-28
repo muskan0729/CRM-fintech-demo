@@ -1,0 +1,24 @@
+.sidebar::-webkit-scrollbar {
+  width: 0.5px;
+  height: 0.5px;
+}
+
+.sidebar::-webkit-scrollbar-thumb {
+  background: #333333;
+}
+
+.sidebar::-webkit-scrollbar-track {
+  background: #f3f4f6;
+}
+.dropdown-button.active-menu,
+.dropdown-button:hover {
+  background: linear-gradient(275deg, rgb(8, 43, 109), rgb(85, 128, 245));
+  color: white;
+}
+
+.subdropdown-button.active-submenu,
+.subdropdown-button:hover { 
+  background: linear-gradient(275deg, rgb(8, 43, 109), rgb(85, 128, 245));
+  color: white !important;
+}
+
