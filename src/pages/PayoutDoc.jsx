@@ -32,7 +32,7 @@ const PayoutDoc = () => {
       id: "cashfree-request",
       title: "Create Payout Payment Request",
       type: "api1",
-      endpoint: "POST https://uatfintech.spay.live/api/payout/request",
+      endpoint: "POST ${import.meta.env.VITE_API_URL}/payout/request",
       headers: "Content-Type: application/json",
       parameters: [
         { field: "token", type: "String", required: "Yes", description: "API key/token provided by Spay for authentication" },
@@ -46,7 +46,7 @@ const PayoutDoc = () => {
       ],
       request: {
         curl: `
-curl --location https://uatfintech.spay.live/api/payout/request
+curl --location ${import.meta.env.VITE_API_URL}/payout/request
 --form 'token="Q9xRwseKPkXXXXXXXXtygT78wnHPji"
 --form 'orderid="AKXXXXX"
 --form "beneficiary_email=customer / enduser mail_id"
@@ -86,7 +86,7 @@ curl --location https://uatfintech.spay.live/api/payout/request
       id: "cashfree-status",
       title: "Check Payment Status",
       type: "api1",
-      endpoint: 'GET https://uatfintech.spay.live/api/payout/status',
+      endpoint: 'GET ${import.meta.env.VITE_API_URL}/payout/status',
       headers: "Content-Type: application/json",
       parameters: [
         { field: "token", type: "String", required: "Yes", description: "API key/token provided by SPay Dashboard" },
@@ -94,7 +94,7 @@ curl --location https://uatfintech.spay.live/api/payout/request
       ],
       request: {
         curl: `
-curl --location GET "https://uatfintech.spay.live/api/payout/request
+curl --location GET "${import.meta.env.VITE_API_URL}/payout/request
 token = "Q9xRwseKPkMWXXXXXT78wnHPji&apitxnid=AK0XXXX"
       `
       },

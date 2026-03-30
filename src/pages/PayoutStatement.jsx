@@ -154,7 +154,7 @@ const fetchFilteredData = async () => {
     ).toString();
 
     const res = await fetch(
-      `https://uatfintech.spay.live/api/reportrecords-List?${query}`,
+      `${import.meta.env.VITE_API_URL}/reportrecords-List?${query}`,
       {
         headers: {
           Authorization: `Bearer ${token}`,
@@ -213,7 +213,7 @@ to_date: formatDateForAPI(endDate, true),
       ).toString();
 
       const res = await fetch(
-        `https://uatfintech.spay.live/api/reportrecords-List?${query}`,
+        `${import.meta.env.VITE_API_URL}/reportrecords-List?${query}`,
         {
           headers: {
             Authorization: `Bearer ${token}`,

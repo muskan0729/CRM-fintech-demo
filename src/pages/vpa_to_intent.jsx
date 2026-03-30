@@ -9,7 +9,7 @@ const vpa_to_intent = () => {
   const [status, setStatus] = useState("Waiting for payment...");
 
   useEffect(() => {
-    axios.post("https://uatfintech.spay.live/api/vpa-intent", { })
+    axios.post("${import.meta.env.VITE_API_URL}/vpa-intent", { })
       .then(res => setData(res.data.data))
       .catch(err => console.log(err));
   }, []);

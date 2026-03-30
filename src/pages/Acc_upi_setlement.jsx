@@ -217,7 +217,7 @@ Object.entries(params).forEach(([key, value]) => {
 });
 
       const res = await fetch(
-        `https://uatfintech.spay.live/api/reportrecords-List?${query}`,
+        `${import.meta.env.VITE_API_URL}/reportrecords-List?${query}`,
         {
           headers: {
             Authorization: `Bearer ${token}`,

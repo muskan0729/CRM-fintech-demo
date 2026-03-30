@@ -160,13 +160,13 @@ export const Sidebar = ({ open, setOpen }) => {
       />
 
       {/* Sidebar - Light blue theme */}
-      <div
-        className={`fixed top-0 left-0 h-full w-64 md:w-72 flex flex-col
-          bg-gradient-to-b from-blue-50 via-blue-100 to-blue-200
-          shadow-2xl shadow-blue-600/20 border-r border-blue-200/60
-          z-40 transform transition-transform duration-400 ease-out
-          md:translate-x-0 ${open ? "translate-x-0" : "-translate-x-full"} scrollbar-hide`}
-      >
+    <div
+  className={`fixed top-0 left-0 h-full w-64 md:w-72 flex flex-col
+    bg-[#023842] text-slate-200
+    shadow-xl border-r border-[#03535F]
+    z-40 transform transition-transform duration-400 ease-out
+    md:translate-x-0 ${open ? "translate-x-0" : "-translate-x-full"} scrollbar-hide`}
+>
         {/* Mobile Close Button */}
         <button
           className="absolute top-5 right-5 text-blue-700 hover:text-blue-900 transition-colors md:hidden z-10"
@@ -177,15 +177,17 @@ export const Sidebar = ({ open, setOpen }) => {
         </button>
 
         {/* Logo - Larger size restored */}
-        <div className="flex-shrink-0 py-6 px-6 flex justify-center border-b border-blue-200/50">
-          <Link to="/dashboard">
-            <img
-              src={Logo}
-              className="w-25 md:w-30 h-auto drop-shadow-md hover:scale-105 transition-transform duration-300"
-              alt="Spay Logo"
-            />
-          </Link>
-        </div>
+<div className="flex-shrink-0 py-6 px-6 flex justify-center border-b border-[#023842]/20">
+  <Link to="/dashboard">
+    <div className="w-20 h-20 md:w-24 md:h-24 bg-white rounded-full flex items-center justify-center shadow-md overflow-hidden">
+      <img
+        src={Logo}
+        className="w-20 md:w-14 object-contain"
+        alt="Spay Logo"
+      />
+    </div>
+  </Link>
+</div>
 
         {/* Menu Items */}
         <ul className="flex-1 overflow-y-auto py-4 px-3 space-y-1.5 scrollbar-hide">
@@ -202,12 +204,12 @@ export const Sidebar = ({ open, setOpen }) => {
                     className={`group flex items-center gap-3.5 px-4 py-3 rounded-xl transition-all duration-200 cursor-pointer
                       ${
                         currentPath === item.link
-                          ? "bg-blue-600/10 text-blue-900 font-semibold shadow-sm border-l-4 border-blue-600"
-                          : "text-blue-800 hover:bg-blue-100/70 hover:text-blue-900 hover:shadow-md hover:border-l-4 hover:border-blue-500"
+                          ? "bg-[#0F4C5C] text-white font-semibold border-l-4 border-white"
+  : "text-slate-300 hover:bg-[#03535F] hover:text-white"
                       }`}
                   >
                     <i
-                      className={`fa-solid ${item.icon} w-6 text-center text-blue-600 group-hover:text-blue-700 transition-colors`}
+                      className={`fa-solid ${item.icon} w-6 text-center text-slate-300 group-hover:text-white group-hover:text-blue-700 transition-colors`}
                     />
                     <span className="text-sm">{item.label}</span>
                   </Link>
@@ -218,13 +220,13 @@ export const Sidebar = ({ open, setOpen }) => {
                       className={`group flex items-center gap-3.5 w-full px-4 py-3 rounded-xl transition-all duration-200 cursor-pointer
                         ${
                           isParentActive || activeDropdown === item.dropdown
-                            ? "bg-blue-600/8 text-blue-900 font-medium shadow-sm border-l-4 border-blue-500"
-                            : "text-blue-800 hover:bg-blue-100/70 hover:text-blue-900 hover:shadow-md hover:border-l-4 hover:border-blue-500"
+                              ? "bg-[#0F4C5C] text-white border-l-4 border-white"
+  : "text-slate-300 hover:bg-[#03535F] hover:text-white"
                         }`}
                       onClick={() => toggleDropdown(item.dropdown)}
                     >
                       <i
-                        className={`fa-solid ${item.icon} w-6 text-center text-blue-600 group-hover:text-blue-700 transition-colors`}
+                        className={`fa-solid ${item.icon} w-6 text-center text-slate-300 group-hover:text-white group-hover:text-blue-700 transition-colors`}
                       />
                       <span className="flex-1 text-left text-sm">{item.label}</span>
 
@@ -260,13 +262,13 @@ export const Sidebar = ({ open, setOpen }) => {
                                 className={`flex items-center gap-2.5 px-5 py-2.5 rounded-lg text-sm transition-all duration-200 cursor-pointer
                                   ${
                                     isActive
-                                      ? "bg-blue-50 text-blue-900 font-medium border-l-4 border-blue-500"
-                                      : "text-blue-700 hover:bg-blue-100/80 hover:text-blue-900 hover:border-l-4 hover:border-blue-500"
+                                     ? "bg-[#0F4C5C] text-white border-l-4 border-white"
+  : "text-slate-400 hover:bg-[#03535F] hover:text-white"
                                   }`}
                               >
                                 <i
                                   className={`fa-solid fa-circle text-[7px] ${
-                                    isActive ? "text-blue-600" : "text-blue-300"
+                                    isActive ? "text-slate-300 group-hover:text-white" : "text-blue-300"
                                   }`}
                                 />
                                 {sub.label}
@@ -284,7 +286,7 @@ export const Sidebar = ({ open, setOpen }) => {
         </ul>
 
         {/* Footer */}
-        <div className="px-4 py-3 text-xs text-blue-600/70 text-center border-t border-blue-200/50">
+        <div className="px-4 py-3 text-xs text-slate-300 group-hover:text-white/70 text-center border-t border-blue-200/50">
           SPay Fintech Pvt Ltd Dashboard • {new Date().getFullYear()}
         </div>
       </div>

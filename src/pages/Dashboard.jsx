@@ -5,6 +5,8 @@ import Table from "../components/Table";
 import useAutoFetch from "../hooks/useAutoFetch";
 import DashboardSkeleton from "../components/DashboardSkeleton";
 import { useNavigate } from "react-router-dom";
+import { BarTest } from "../components/BarTest";
+
 
 export const Dashboard = () => {
   const DASHBOARD_LOCK_KEY = "payment_dashboard_logged_in";
@@ -251,68 +253,78 @@ const lineChartData = useMemo(() => monthwiseData || [], [monthwiseData]);
   
   return (
     <div className="bg-gradient-to-b from-slate-50 to-slate-100/70 pb-16">
-      <div className="mx-auto px-5 sm:px-7 lg:px-10 pt-8 lg:pt-12">
+      <div className="mx-auto px-5 sm:px-7 lg:px-10 pt-8 lg:pt-12 ">
         {/* Cards */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 lg:gap-7 mb-12">
-          {cardsToShow.map((card, i) => {
-            const amountStr = formatRupee(card.value);
-            return (
-              <div
-                key={i}
-                className={`group relative bg-white rounded-tl-3xl rounded-br-3xl shadow-[0_10px_30px_rgba(0,0,0,0.12)] overflow-hidden transition-all duration-400 hover:shadow-[0_25px_70px_rgba(0,0,0,0.18)] hover:-translate-y-2 border border-slate-100/80 min-w-0`}
-              >
-                <div
-                  className="absolute top-0 left-0 right-0 h-3 transform -skew-x-12 origin-left"
-                  style={{
-                    background: "linear-gradient(90deg, rgba(6,76,150,1) 0%, rgba(40,142,214,1) 100%)",
-                  }}
-                />
-                <div className="p-6 pt-9 relative">
-                  <h3 className="text-sm font-semibold text-slate-600 mb-2.5 tracking-wider uppercase">
-                    {card.title}
-                  </h3>
-                  <div
-    className="font-bold text-slate-800 whitespace-nowrap w-full tabular-nums text-[clamp(10px,1.5vw,20px)]"
+<div className="grid grid-cols-1 lg:grid-cols-2 gap-6 items-stretch">
 
-                    title={`₹${amountStr}`}
-                  >
-                    ₹{amountStr}
-                  </div>
-                </div>
+  {/* LEFT SIDE */}
+  <div className="bg-white shadow-md rounded-xl p-4 flex flex-col h-full lg:max-h-[350px]">
+    
+    <h3 className="text-xl font-semibold text-slate-800 relative inline-block mb-3">
+      Monthly Performance
+      <span className="absolute -bottom-2 left-0 w-12 h-1 bg-gradient-to-r from-blue-500/50 to-indigo-500/50 rounded-full" />
+    </h3>
+
+    <div className="flex-1 overflow-hidden">
+      {/* <LineChart1 data={lineChartData} /> */}
+      <BarTest data = {lineChartData}/>
+    </div>
+
+  </div>
+
+  {/* RIGHT SIDE */}
+<div className="h-full lg:max-h-[420px] overflow-hidden bg-slate-50 rounded-xl p-5  ">
+
+  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 h-full overflow-y-auto pr-1">
+
+    {cardsToShow.map((card, i) => {
+      const amountStr = formatRupee(card.value);
+
+      return (
+        <div
+          key={i}
+          className="group relative bg-gray-100 rounded-xl shadow-sm hover:shadow-md transition-all duration-300 border border-slate-200 overflow-hidden"
+        >
+          
+          {/* LEFT ACCENT STRIP */}
+          <div
+            className="absolute left-0 top-0 bottom-0 w-1.5"
+            style={{ backgroundColor: "#023842" }}
+          />
+
+          {/* TOP RIGHT ICON BADGE */}
+          <div className="absolute top-3 right-3 w-7 h-7 rounded-full flex items-center justify-center text-white text-xs shadow"
+               style={{ backgroundColor: "#023842" }}>
+            ₹
+          </div>
+
+          {/* CONTENT */}
+          <div className="p-4 pl-5">
+            <h3 className="text-md font-semibold text-slate-500 uppercase tracking-wide mb-8">
+              {card.title}
+            </h3>
+
+            <div className="flex items-center justify-between">
+              <div className="font-bold text-slate-800 text-xl">
+                ₹{amountStr}
               </div>
-            );
-          })}
-        </div>
-  {role === "admin" && (
-        <div className="grid grid-cols-1 lg:grid-cols-5 gap-7 mb-12">
-          {/* Line chart */}
-          <div className="lg:col-span-3 bg-white rounded-3xl shadow-[0_10px_40px_rgb(0,0,0,0.06)] border border-slate-100/80 p-6 lg:p-8 overflow-hidden transition-all duration-400 hover:shadow-[0_25px_70px_rgb(0,0,0,0.09)]">
-            <h3 className="text-2xl font-semibold text-slate-800 mb-8 relative inline-block">
-              Monthly Performance
-              <span className="absolute -bottom-2.5 left-0 w-16 h-1 bg-gradient-to-r from-blue-500/50 to-indigo-500/50 rounded-full" />
-            </h3>
-           
-            <div className="h-[400px] lg:h-[440px] -mx-2">
-              {/* <LineChart1 data={cardData?.monthWiseStatusCounts} /> */}
-              < LineChart1 data={lineChartData}/>
-            </div>
-             
-          </div>
-          {/* Donut chart */}
-          <div className="lg:col-span-2 bg-white rounded-3xl shadow-[0_10px_40px_rgb(0,0,0,0.06)] border border-slate-100/80 p-6 lg:p-8 transition-all duration-400 hover:shadow-[0_25px_70px_rgb(0,0,0,0.09)]">
-            <h3 className="text-2xl font-semibold text-slate-800 mb-8 relative inline-block">
-              Status Distribution
-              <span className="absolute -bottom-2.5 left-0 w-16 h-1 bg-gradient-to-r from-rose-500/50 to-pink-500/50 rounded-full" />
-            </h3>
-            <div className="h-[400px] flex items-center justify-center">
-              {/* <DonutChart data={cardData?.transactionStatusCounts || []} /> */}
-              <DonutChart data={donutData}/>
-            </div>
-          </div>
-        </div>
-       )}
 
-        {/* TABLE SECTION */}
+      
+            </div>
+          </div>
+
+        </div>
+      );
+    })}
+
+  </div>
+
+</div>
+
+</div>
+
+
+        {/* TABLE SECTION
         <div className="bg-white rounded-3xl shadow-[0_10px_40px_rgb(0,0,0,0.06)] border border-slate-100/80 overflow-hidden">
           <div className="px-7 py-6 border-b border-slate-100/80 bg-slate-50/40">
             <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-5">
@@ -364,7 +376,7 @@ const lineChartData = useMemo(() => monthwiseData || [], [monthwiseData]);
 
           
           </div>
-        </div>
+        </div> */}
       </div>
     </div>
   );

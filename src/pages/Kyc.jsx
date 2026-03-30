@@ -538,7 +538,7 @@ export const Kyc = () => {
       setGstLoading(true);
 
       const res = await fetch(
-        "https://uatfintech.spay.live/api/gst/advance-verify",
+        "${import.meta.env.VITE_API_URL}/gst/advance-verify",
         {
           method: "POST",
           headers: { "Content-Type": "application/json" },
@@ -652,7 +652,7 @@ export const Kyc = () => {
 
     try {
       const res = await fetch(
-        "https://uatfintech.spay.live/api/digilocker/init-aadhaar-pan",
+        "${import.meta.env.VITE_API_URL}/digilocker/init-aadhaar-pan",
         {
           method: "POST",
           headers: {
@@ -732,7 +732,7 @@ export const Kyc = () => {
 
     try {
       const res = await fetch(
-        "https://uatfintech.spay.live/api/digilocker/fetch-documents",
+        "${import.meta.env.VITE_API_URL}/digilocker/fetch-documents",
         {
           method: "POST",
           headers: {
@@ -831,7 +831,7 @@ export const Kyc = () => {
     setErrors((prev) => ({ ...prev, vkyc_session_id: "" }));
 
     try {
-      const res = await fetch("https://uatfintech.spay.live/api/vkyc/session", {
+      const res = await fetch("${import.meta.env.VITE_API_URL}/vkyc/session", {
         method: "POST",
         headers: {
           Accept: "application/json",

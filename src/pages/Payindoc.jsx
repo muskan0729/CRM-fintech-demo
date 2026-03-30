@@ -13,7 +13,7 @@ const PayinDoc = () => {
     id: "airpay-request",
     title: "Create Payin Payment Request",
     type: "api",
-    endpoint: "POST https://uatfintech.spay.live/api/payin/upi/request ",
+    endpoint: "POST ${import.meta.env.VITE_API_URL}/payin/upi/request ",
     headers: "Content-Type: application/json",
     parameters: [
       { field: "token", type: "String", required: "Yes", description: "API key/token provided by Spay" },
@@ -24,7 +24,7 @@ const PayinDoc = () => {
     ],
     request: {
       curl: `
-curl--location "https://uatfintech.spay.live/api/payin/upi/request"
+curl--location "${import.meta.env.VITE_API_URL}/payin/upi/request"
 --form 'token="Sha6Nplm0pXXXXXxp8ABGQKUE6g"
 --form 'orderid="TESTXXXX3117xX"
 --form 'amount="10.00"
@@ -60,7 +60,7 @@ efda516e&am=10.00&mam=10.00&mc=5999&mode=04&tr=XXXX 377960382&ver=1"
     id: "airpay-status",
     title: "Check Payment Status",
     type: "api",
-    endpoint: "https://uatfintech.spay.live/api/payin/status",
+    endpoint: "${import.meta.env.VITE_API_URL}/payin/status",
     headers: "Content-Type: multipart/form-data; boundary=",
     parameters: [
       { field: "token", type: "String", required: "Yes", description: "API key/token provided by SPay Dashboard" },
@@ -68,7 +68,7 @@ efda516e&am=10.00&mam=10.00&mc=5999&mode=04&tr=XXXX 377960382&ver=1"
     ],
     request: {
       curl: `
-curl--location POST "https://uatfintech.spay.live/api/payin/status"
+curl--location POST "${import.meta.env.VITE_API_URL}/payin/status"
 --form token="Q9xRwseKPkXXXMWw6iseUtygT78wnHPji"
 --form orderid="xi2TpoHXXXX0mSQU"
       `
