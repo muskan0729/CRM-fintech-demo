@@ -5,3 +5,7 @@
 *{
   font-family: 'Titillium Web', sans-serif;
 } 
+:root {
+  --primary-color: #03535F;
+ --bg-color:#023842;
+}

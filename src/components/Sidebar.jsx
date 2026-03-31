@@ -7,6 +7,7 @@ export const Sidebar = ({ open, setOpen,openProfile }) => {
   const role = atob(localStorage.getItem("role")); // admin / user / crypto
   const [activeDropdown, setActiveDropdown] = useState(null);
   const dropdownRef = useRef(null);
+const [openMenu, setOpenMenu] = useState(null);
 
   const location = useLocation();
   const currentPath = location.pathname;
@@ -18,49 +19,57 @@ export const Sidebar = ({ open, setOpen,openProfile }) => {
 
 
   // MENU CONFIG - unchanged
- const menu = [
-  { label: "Dashboard", icon: "fa-chart-pie", link: "/dashboard" },
+const menu = [
+  { label: "Home", icon: "fa-chart-pie", link: "/dashboard" },
 
   ...(role === "admin"
     ? [
-        { label: "Scheme", icon: "fa-money-check", link: "/scheme" },
-        { label: "Merchant Onboarding", icon: "fa-user-group", link: "/member-list" },
-
-        { label: "Load Wallet", icon: "fa-piggy-bank", link: "/load-wallet" },
-        { label: "Payin Settlement", icon: "fa-piggy-bank", link: "/payin-settlement" },
-
+        { label: "Scheme", icon: "fa-file-invoice-dollar", link: "/scheme" },
+        { label: "Merchant Onboarding", icon: "fa-user-plus", link: "/member-list" },
+        { label: "Load Wallet", icon: "fa-wallet", link: "/load-wallet" },
+        { label: "Payin Settlement", icon: "fa-money-bill-transfer", link: "/payin-settlement" },
         { label: "Bank", icon: "fa-building-columns", link: "/onboard-bank" },
-
-        { label: "UPI Statement", icon: "fa-clock-rotate-left", link: "/upi-statement" },
-        { label: "Payout Statement", icon: "fa-clock-rotate-left", link: "/payout-statement" },
-
-        { label: "Topup Statement", icon: "fa-layer-group", link: "/topup-statement" },
-        { label: "Settlement Payin", icon: "fa-layer-group", link: "/settlement-payin-statement" },
-
-        { label: "VPA", icon: "fa-money-bill-transfer", link: "/vpa" },
+        { label: "VPA", icon: "fa-at", link: "/vpa" },
       ]
     : []),
 
   ...(role === "user"
     ? [
-        { label: "Payout Request", icon: "fa-credit-card", link: "/payout-request" },
-        { label: "Payin Request", icon: "fa-money-bill-transfer", link: "/payin-request" },
-
-        { label: "UPI Statement", icon: "fa-clock-rotate-left", link: "/upi-statement" },
-        { label: "Payout Statement", icon: "fa-clock-rotate-left", link: "/payout-statement" },
-
-        { label: "Topup Statement", icon: "fa-layer-group", link: "/topup-statement" },
-        { label: "Settlement Payin", icon: "fa-layer-group", link: "/settlement-payin-statement" },
-
-        { label: "API Settings", icon: "fa-gears", link: "/api-settings" },
-        { label: "Payin Docs", icon: "fa-file", link: "/payin-doc" },
-        { label: "Payout Docs", icon: "fa-file", link: "/payout-doc" },
+        {
+          label: "Payin Request",
+          icon: "fa-arrow-down", // money coming in
+          link: "/payin-request",
+        },
+        {
+          label: "Payout Request",
+          icon: "fa-arrow-up", // money going out
+           link: "/payout-request",
+          // children: [
+          //   { label: "Payout Request", link: "/payout-request" },
+          // ],
+        },
       ]
     : []),
 
-  // { label: "Chargeback", icon: "fa-chart-pie", link: "/Chargeback" },
+  // ✅ COMMON FOR BOTH
+  {
+    label: "Transaction History",
+    icon: "fa-clock-rotate-left", // history icon
+    children: [
+      { label: "Payin Statement", icon: "fa-arrow-down", link: "/upi-statement" },
+      { label: "Payout Statement", icon: "fa-arrow-up", link: "/payout-statement" },
+      { label: "Topup Statement", icon: "fa-wallet", link: "/topup-statement" },
+      { label: "Settlement Payin", icon: "fa-money-check-dollar", link: "/settlement-payin-statement" },
+    ],
+  },
 
-
+  ...(role === "user"
+    ? [
+        { label: "Webhook Config", icon: "fa-gears", link: "/api-settings" },
+        { label: "Payin Documents", icon: "fa-file-lines", link: "/payin-doc" },
+        { label: "Payout Documents", icon: "fa-file-lines", link: "/payout-doc" },
+      ]
+    : []),
 ];
 
   return (
@@ -88,8 +97,8 @@ export const Sidebar = ({ open, setOpen,openProfile }) => {
   onClick={() => setOpen(!open)}
 className={`fixed top-5 left-5 z-50 p-3 rounded-lg transition-all duration-300
     ${open 
-      ? "bg-[#023842] text-white shadow-lg" 
-      : "bg-transparent text-[#023842] shadow-none"}
+      ? "bg-[var(--bg-color)] text-white shadow-lg" 
+      : "bg-transparent text-[var(--bg-color)] shadow-none"}
   `}>
   <i className={`fa-solid ${open ? "fa-xmark" : "fa-bars"} text-lg`} />
 </button>
@@ -97,8 +106,8 @@ className={`fixed top-5 left-5 z-50 p-3 rounded-lg transition-all duration-300
       {/* Sidebar - Light blue theme */}
    <div
   className={`fixed top-0 left-0 h-full w-64 md:w-72 flex flex-col
-    bg-[#023842] text-slate-200
-    shadow-xl border-r border-[#03535F]
+    bg-[var(--bg-color)] text-slate-200
+    shadow-xl border-r border-[var(--primary-color)]
     z-40 transform transition-transform duration-300 ease-out
     ${open ? "translate-x-0" : "-translate-x-full"}`}
 >
@@ -112,7 +121,7 @@ className={`fixed top-5 left-5 z-50 p-3 rounded-lg transition-all duration-300
         </button> */}
 
         {/* Logo - Larger size restored */}
-<div className="flex-shrink-0 py-6 px-6 flex justify-center border-b border-[#023842]/20">
+<div className="flex-shrink-0 py-6 px-6 flex justify-center border-b border-[var(--bg-color)]/20">
   <Link to="/dashboard">
     <div className="w-20 h-20 md:w-24 md:h-24 bg-white rounded-full flex items-center justify-center shadow-md overflow-hidden">
       <img
@@ -126,29 +135,63 @@ className={`fixed top-5 left-5 z-50 p-3 rounded-lg transition-all duration-300
 </div>
 
         {/* Menu Items */}
-   <ul className="flex-1 overflow-y-auto py-4 px-3 space-y-2 scrollbar-hide">
+<ul className="flex-1 overflow-y-auto py-4 px-3 space-y-2 scrollbar-hide">
   {menu.map((item, i) => {
-    const isActive = currentPath === item.link;
+    const isOpen = openMenu === i;
+    const hasChildren = item.children && item.children.length > 0;
 
     return (
       <li key={i}>
-        <Link
-          to={item.link}
-          className={`group flex items-center gap-3.5 px-4 py-3 rounded-xl transition-all duration-200
-            ${
-              isActive
-                ? "bg-[#0F4C5C] text-white font-semibold border-l-4 border-cyan-400 shadow-md"
-                : "text-slate-300 hover:bg-[#03535F] hover:text-white"
-            }`}
-        >
-          <i
-            className={`fa-solid ${item.icon} w-6 text-center transition-colors
-              ${isActive ? "text-white" : "text-slate-400 group-hover:text-white"}
-            `}
-          />
+        
+        {/* ✅ IF HAS CHILDREN → DROPDOWN */}
+        {hasChildren ? (
+          <>
+            <div
+              onClick={() => setOpenMenu(isOpen ? null : i)}
+              className="flex items-center justify-between px-4 py-3 rounded-xl cursor-pointer text-slate-300 hover:bg-[var(--primary-color)] hover:text-white"
+            >
+              <div className="flex items-center gap-3.5">
+                <i className={`fa-solid ${item.icon} w-6 text-center`} />
+                <span className="text-sm font-medium">{item.label}</span>
+              </div>
 
-          <span className="text-sm">{item.label}</span>
-        </Link>
+              <i className={`fa-solid fa-chevron-${isOpen ? "up" : "down"} text-xs`} />
+            </div>
+
+            {isOpen && (
+              <ul className="ml-6 mt-2 space-y-1">
+                {item.children.map((child, idx) => {
+                  const isActive = currentPath === child.link;
+
+                  return (
+                    <li key={idx}>
+                      <Link
+                        to={child.link}
+                        className={`block px-3 py-2 rounded-lg text-sm transition
+                          ${
+                            isActive
+                              ? "bg-[#0F4C5C] text-white font-semibold"
+                              : "text-slate-400 hover:bg-[var(--primary-color)] hover:text-white"
+                          }`}
+                      >
+                        {child.label}
+                      </Link>
+                    </li>
+                  );
+                })}
+              </ul>
+            )}
+          </>
+        ) : (
+          /* ✅ IF NO CHILDREN → DIRECT LINK */
+          <Link
+            to={item.link}
+            className="flex items-center gap-3.5 px-4 py-3 rounded-xl text-slate-300 hover:bg-[#03535F] hover:text-white"
+          >
+            <i className={`fa-solid ${item.icon} w-6 text-center`} />
+            <span className="text-sm font-medium">{item.label}</span>
+          </Link>
+        )}
       </li>
     );
   })}

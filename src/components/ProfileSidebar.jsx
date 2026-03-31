@@ -134,8 +134,8 @@ export const ProfileSidebar = ({
         onClick={(e) => e.stopPropagation()}
         className={`
           fixed top-0 right-0 w-72 md:w-80 h-full z-50
-        bg-[#023842] text-slate-200  
-       shadow-2xl shadow-[#023842]/30
+        bg-[var(--bg-color)] text-slate-200  
+       shadow-2xl shadow-[var(--bg-color)]/30
           transform overflow-y-auto transition-all duration-400 ease-out
           ${open ? "translate-x-0 opacity-100" : "translate-x-full opacity-0 pointer-events-none"}
           flex flex-col border-l border-blue-300/40
@@ -269,7 +269,7 @@ export const ProfileSidebar = ({
               </button>
               <button
                 onClick={closeLogoutModal}
-                className="flex-1 py-3 px-4 bg-blue-50 hover:bg-blue-100 text-[#023842] rounded-xl font-medium transition-all duration-200 border border-blue-200 hover:border-blue-300 text-sm"
+                className="flex-1 py-3 px-4 bg-blue-50 hover:bg-blue-100 text-[var(--bg-color)] rounded-xl font-medium transition-all duration-200 border border-blue-200 hover:border-blue-300 text-sm"
               >
                 Cancel
               </button>

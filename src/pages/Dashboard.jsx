@@ -217,10 +217,10 @@ const transactionData = useMemo(() => {
   }, [recordLoading, cardData]);
 
 const cardsToShow = useMemo(() => [
-  { title: "Today Pay-IN", value: summaryData?.today_payin ?? "00" },
-  { title: "Total Pay-IN", value: summaryData?.total_payin ?? "00" },
-  { title: "Today Pay-OUT", value: summaryData?.today_payout ?? "00"},
-  { title: "Total Pay-OUT", value: summaryData?.total_payout ?? "00" },
+  { title: "Today Cash-In", value: summaryData?.today_payin ?? "00" },
+  { title: "Total Cash-In", value: summaryData?.total_payin ?? "00" },
+  { title: "Today Cash-Out", value: summaryData?.today_payout ?? "00"},
+  { title: "Total Cash-Out", value: summaryData?.total_payout ?? "00" },
 ], [summaryData]);
 
 const donutData = useMemo(() => statusCounts || [], [statusCounts]);
@@ -261,7 +261,7 @@ const lineChartData = useMemo(() => monthwiseData || [], [monthwiseData]);
   <div className="bg-white shadow-md rounded-xl p-4 flex flex-col h-full lg:max-h-[350px]">
     
     <h3 className="text-xl font-semibold text-slate-800 relative inline-block mb-3">
-      Monthly Performance
+      Monthly Summary
       <span className="absolute -bottom-2 left-0 w-12 h-1 bg-gradient-to-r from-blue-500/50 to-indigo-500/50 rounded-full" />
     </h3>
 
@@ -288,21 +288,21 @@ const lineChartData = useMemo(() => monthwiseData || [], [monthwiseData]);
           
           {/* LEFT ACCENT STRIP */}
           <div
-            className="absolute left-0 top-0 bottom-0 w-1.5"
-            style={{ backgroundColor: "#023842" }}
+            className="absolute left-0 top-0 bottom-0 w-1.5 bg-[var(--bg-color)]"
+            // style={{ backgroundColor: "#023842" }}
           />
 
           {/* TOP RIGHT ICON BADGE */}
-          <div className="absolute top-3 right-3 w-7 h-7 rounded-full flex items-center justify-center text-white text-xs shadow"
+          {/* <div className="absolute top-3 right-4 w-6 h-6 rounded-full flex items-center justify-center text-white text-xs shadow"
                style={{ backgroundColor: "#023842" }}>
             ₹
-          </div>
+          </div> */}
 
           {/* CONTENT */}
-          <div className="p-4 pl-5">
-            <h3 className="text-md font-semibold text-slate-500 uppercase tracking-wide mb-8">
+          <div className="p-4 pl-3">
+            <h4 className="text-md font-semibold text-slate-500 uppercase tracking-wide mb-8">
               {card.title}
-            </h3>
+            </h4>
 
             <div className="flex items-center justify-between">
               <div className="font-bold text-slate-800 text-xl">
@@ -332,7 +332,7 @@ const lineChartData = useMemo(() => monthwiseData || [], [monthwiseData]);
                   bg-white rounded-xl px-6 py-4 shadow-sm">
     
     {/* Title */}
-    <h3 className="text-xl font-semibold text-[#023842] tracking-wide">
+    <h3 className="text-xl font-semibold text-[var(--bg-color)] tracking-wide">
       Transaction History
     </h3>
 
@@ -343,9 +343,9 @@ const lineChartData = useMemo(() => monthwiseData || [], [monthwiseData]);
         onChange={(e) => setStatusFilter(e.target.value)}
         className="bg-slate-50 border border-slate-300 text-slate-700 text-sm 
                    rounded-full px-5 py-2.5 pr-10
-                   focus:ring-2 focus:ring-[#023842] focus:border-[#023842]
+                   focus:ring-2 focus:ring-[var(--bg-color)] focus:border-[#031f24]
                    outline-none min-w-[180px]
-                   transition-all shadow-sm hover:border-[#023842]
+                   transition-all shadow-sm hover:border-[var(--bg-color)]
                    appearance-none cursor-pointer"
       >
         <option value="ALL">All Status</option>
@@ -356,8 +356,7 @@ const lineChartData = useMemo(() => monthwiseData || [], [monthwiseData]);
         <option value="REFUNDED">Refunded</option>
         <option value="COMPLETED">Completed</option>
         <option value="INITIATED">Initiated</option>
-        <option value="ACCEPTED">Accepted</option>
-        <option value="REVERSE">Reverse</option>
+
       </select>
 
       <span className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 text-xs">
