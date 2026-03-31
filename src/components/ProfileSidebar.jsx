@@ -134,11 +134,11 @@ export const ProfileSidebar = ({
         onClick={(e) => e.stopPropagation()}
         className={`
           fixed top-0 right-0 w-72 md:w-80 h-full z-50
-          bg-gradient-to-b from-blue-50 via-blue-100 to-blue-200
-          shadow-2xl shadow-blue-600/30
+        bg-[#023842] text-slate-200  
+       shadow-2xl shadow-[#023842]/30
           transform overflow-y-auto transition-all duration-400 ease-out
           ${open ? "translate-x-0 opacity-100" : "translate-x-full opacity-0 pointer-events-none"}
-          flex flex-col rounded-l-2xl border-l border-blue-300/40
+          flex flex-col border-l border-blue-300/40
         `}
         role="dialog"
         aria-modal="true"
@@ -146,18 +146,18 @@ export const ProfileSidebar = ({
       >
         <button
           onClick={onClose}
-          className="absolute top-5 right-5 text-blue-700 hover:text-blue-900 transition-colors duration-200 z-10"
+          className="absolute top-5 right-5 text-white hover:text-gray-500 transition-colors duration-200 z-10"
           aria-label="Close sidebar"
         >
           <i className="fa-solid fa-xmark text-2xl" />
         </button>
 
-        <div className="px-7 py-10 border-b border-blue-300/40 bg-gradient-to-r from-blue-600/5 to-transparent">
+        <div className="px-7 py-10 border-b border-white/40 bg-gradient-to-r from-blue-600/5 to-transparent">
           <div className="flex flex-col items-center text-center gap-4">
             <div
-              className="w-20 h-20 rounded-full overflow-hidden shadow-lg shadow-blue-500/40 ring-2 ring-blue-400/60 transition-all duration-300 hover:ring-blue-500 hover:shadow-blue-600/50"
+              className="w-20 h-20 rounded-full overflow-hidden shadow-lg shadow-white-500/40 ring-2 ring-white/60 transition-all duration-300 hover:ring-gray-500 hover:shadow-white/50"
               style={{
-                background: "linear-gradient(135deg, #1e40af 0%, #3b82f6 100%)",
+                // background: "linear-gradient(135deg, #1e40af 0%, #3b82f6 100%)",
               }}
             >
               {data?.profile_image ? (
@@ -175,10 +175,10 @@ export const ProfileSidebar = ({
             </div>
 
             <div>
-              <p className="text-xl font-bold text-blue-900 tracking-tight">
+              <p className="text-xl font-bold text-white tracking-tight">
                 {displayName}
               </p>
-              <p className="text-sm text-blue-700 mt-1 opacity-90 truncate max-w-[240px]">
+              <p className="text-sm text-white mt-1 opacity-90 truncate max-w-[240px]">
                 {displayEmail}
               </p>
             </div>
@@ -187,62 +187,52 @@ export const ProfileSidebar = ({
 
         {role !== "admin" && (
           <div className="px-7 py-7 border-b border-blue-300/40">
-            <p className="text-xs font-semibold text-blue-600 uppercase mb-5 tracking-wider">
+            <p className="text-xs font-semibold text-white-600 uppercase mb-5 tracking-wider">
               Wallet Balance
             </p>
-            <div className="flex items-center justify-between text-base text-blue-900 mb-2">
+            <div className="flex items-center justify-between text-base text-white mb-2">
               <span className="font-medium">Payin Wallet</span>
               <div className="flex items-center gap-4">
-                <span className={`font-bold transition-all duration-300 ${PayAmountVisible ? "text-emerald-600 scale-105" : "text-blue-800 blur-sm"}`}>
-                  {PayAmountVisible ? `₹${payingAmount || "0.00"}` : "•••••••"}
-                </span>
-                <button
-                  onClick={() => setPayAmountVisible(!PayAmountVisible)}
-                  className="text-blue-600 hover:text-blue-800 transition-colors"
-                  aria-label={PayAmountVisible ? "Hide amount" : "Show amount"}
-                >
-                  <i className={`fa-solid ${PayAmountVisible ? "fa-eye-slash" : "fa-eye"} text-lg`} />
-                </button>
+                  <span>{payingAmount}</span>
               </div>
-
-
-
             </div>
-            <div className="flex items-center justify-between text-base text-blue-900 mb-2">
+                        <div className="flex items-center justify-between text-base text-white mb-2">
+  <span>Payout Wallet</span>
+  <span> ₹ {Number(Payoutwallet ?? 0).toFixed(2)}</span>
+  </div>
+            <div className="flex items-center justify-between text-base text-white mb-2">
   <span>Payin Rolling</span>
   <span>{PayinRollingAmount}</span>
   </div>
-  <div className="flex items-center justify-between text-base text-blue-900 mb-2">
+  {/* <div className="flex items-center justify-between text-base text-white mb-2">
   <span>Payin Total Chanrges</span>
   <span>{PayinTotalCharges}</span>
-  </div>
+  </div> */}
           </div>
         )}
 
         <div className="px-7 py-8 flex flex-col gap-4 flex-grow">
-          {role !== "admin" && (
-            <Link
-              to="/profile"
-              onClick={onClose}
-              className="flex items-center gap-4 px-5 py-4 rounded-xl bg-white/60 hover:bg-white/80 border border-blue-200 hover:border-blue-400 text-blue-800 hover:text-blue-900 transition-all duration-200 shadow-sm hover:shadow-md"
-            >
-              <i className="fa-solid fa-user text-blue-600 text-xl" />
-              <span className="font-medium">My Profile</span>
-            </Link>
-          )}
 
-          <button
-            onClick={handleLogout}
-            disabled={isLoggingOut}
-            className="mt-auto flex items-center justify-center gap-4 px-5 py-4 rounded-xl bg-red-50/80 hover:bg-red-100 border border-red-200 hover:border-red-400 text-red-700 hover:text-red-800 transition-all duration-200 shadow-sm hover:shadow-md disabled:opacity-50"
-          >
-            <i className="fa-solid fa-right-from-bracket text-red-600 text-xl" />
-            <span className="font-medium">Sign Out</span>
-          </button>
+<button
+  onClick={handleLogout}
+  disabled={isLoggingOut}
+  className="mt-auto flex items-center justify-start gap-3 px-4 py-3 rounded-xl
+             backdrop-blur-sm 
+             text-white hover:text-white
+             [text-shadow:0_0_6px_rgba(255,0,0,0.7)]
+             hover:[text-shadow:0_0_10px_rgba(255,0,0,1)]
+             transition-all duration-200
+             disabled:opacity-50"
+>
+  <i className="fa-solid fa-right-from-bracket text-lg" />
+  <span className="text-lg font-bold">
+    {isLoggingOut ? "Signing out..." : "Sign Out"}
+  </span>
+</button>
         </div>
 
-        <div className="px-7 py-5 text-center text-xs text-blue-600/70 border-t border-blue-300/40 mt-auto">
-          SPay Fintech Pvt Ltd Dashboard • © 2026
+        <div className="px-7 py-5 text-center text-xs text-white-600/70 border-t border-blue-300/40 mt-auto">
+         company name • © 2026
         </div>
       </div>
 
@@ -262,8 +252,8 @@ export const ProfileSidebar = ({
                 <i className="fa-solid fa-triangle-exclamation text-yellow-500 text-xl" />
               </div>
               <div>
-                <h3 className="text-xl font-semibold text-blue-900 mb-1">Confirm Sign Out</h3>
-                <p className="text-sm text-blue-700 leading-relaxed">
+                <h3 className="text-xl font-semibold text-white mb-1">Confirm Sign Out</h3>
+                <p className="text-sm text-white-700 leading-relaxed">
                   Are you sure you want to log out? You'll need to sign in again to access your account.
                 </p>
               </div>
@@ -279,7 +269,7 @@ export const ProfileSidebar = ({
               </button>
               <button
                 onClick={closeLogoutModal}
-                className="flex-1 py-3 px-4 bg-blue-50 hover:bg-blue-100 text-blue-700 rounded-xl font-medium transition-all duration-200 border border-blue-200 hover:border-blue-300 text-sm"
+                className="flex-1 py-3 px-4 bg-blue-50 hover:bg-blue-100 text-[#023842] rounded-xl font-medium transition-all duration-200 border border-blue-200 hover:border-blue-300 text-sm"
               >
                 Cancel
               </button>

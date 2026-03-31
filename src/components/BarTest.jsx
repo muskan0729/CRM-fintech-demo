@@ -89,17 +89,22 @@ const chartData = useMemo(() => {
       series,
 
       colors: series.map(s =>
-        s.name === "Payin" ? "#2563EB" : "#22C55E"
+        s.name === "Payin" ?  "#1E3A5F" : "#14532D"
       ),
 
       plotOptions: {
         bar: {
           horizontal: false,
-          columnWidth: "45%",
-          borderRadius: 4,
+          columnWidth: "100%",
+         
         },
       },
-
+ 
+stroke: {
+  show: true,
+  width: 5,
+  colors: ["transparent"], // creates visual separation
+},
       dataLabels: {
         enabled: false,
       },
@@ -160,40 +165,6 @@ const chartData = useMemo(() => {
 
       {/* HEADER CONTROLS */}
       <div className="flex justify-between items-center mb-2 flex-wrap gap-2">
-
-        {/* YEAR SELECT */}
-        <select
-          value={selectedYear}
-          onChange={(e) => setSelectedYear(Number(e.target.value))}
-          className="border px-2 py-1 text-xs rounded"
-        >
-          {[2023, 2024, 2025, 2026].map(y => (
-            <option key={y} value={y}>{y}</option>
-          ))}
-        </select>
-
-        {/* TOGGLES */}
-        <div className="flex gap-4 text-xs">
-          <label className="flex items-center gap-1 cursor-pointer">
-            <input
-              type="checkbox"
-              checked={showPayin}
-              onChange={() => setShowPayin(p => !p)}
-              className="accent-blue-600"
-            />
-            Payin
-          </label>
-
-          <label className="flex items-center gap-1 cursor-pointer">
-            <input
-              type="checkbox"
-              checked={showPayout}
-              onChange={() => setShowPayout(p => !p)}
-              className="accent-green-600"
-            />
-            Payout
-          </label>
-        </div>
 
       </div>
 

@@ -324,33 +324,49 @@ const lineChartData = useMemo(() => monthwiseData || [], [monthwiseData]);
 </div>
 
 
-        {/* TABLE SECTION
-        <div className="bg-white rounded-3xl shadow-[0_10px_40px_rgb(0,0,0,0.06)] border border-slate-100/80 overflow-hidden">
-          <div className="px-7 py-6 border-b border-slate-100/80 bg-slate-50/40">
-            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-5">
-              <h3 className="text-2xl font-semibold text-slate-800">Transaction History</h3>
+        {/* table  */}
+        <div className="mt-4 rounded-3xl bg-white shadow-[0_10px_40px_rgb(0,0,0,0.06)]  overflow-hidden">
+     <div className="px-6 py-5 bg-[#033b44] ">
+  
+  <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 
+                  bg-white rounded-xl px-6 py-4 shadow-sm">
+    
+    {/* Title */}
+    <h3 className="text-xl font-semibold text-[#023842] tracking-wide">
+      Transaction History
+    </h3>
 
-              <div className="relative">
-                <select
-                  value={statusFilter}
-                  onChange={(e) => setStatusFilter(e.target.value)}
-                  className="bg-white border border-slate-200 text-slate-700 text-sm rounded-full px-6 py-3 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none min-w-[200px] transition-all shadow-sm hover:border-blue-300 appearance-none cursor-pointer"
-                >
-                  <option value="ALL">All Status</option>
-                  <option value="SUCCESS">Success</option>
-                  <option value="FAILED">Failed</option>
-                  <option value="PENDING">Pending</option>
-                  <option value="REVERSED">Reversed</option>
-                  <option value="REFUNDED">Refunded</option>
-                  <option value="COMPLETED">Completed</option>
-                  <option value="INITIATED">Initiated</option>
-                   <option value="ACCEPTED">Accepted</option>
-                    <option value="REVERSE">Reverse</option>
-                </select>
-                <span className="absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none text-slate-400">▼</span>
-              </div>
-            </div>
-          </div>
+    {/* Filter */}
+    <div className="relative">
+      <select
+        value={statusFilter}
+        onChange={(e) => setStatusFilter(e.target.value)}
+        className="bg-slate-50 border border-slate-300 text-slate-700 text-sm 
+                   rounded-full px-5 py-2.5 pr-10
+                   focus:ring-2 focus:ring-[#023842] focus:border-[#023842]
+                   outline-none min-w-[180px]
+                   transition-all shadow-sm hover:border-[#023842]
+                   appearance-none cursor-pointer"
+      >
+        <option value="ALL">All Status</option>
+        <option value="SUCCESS">Success</option>
+        <option value="FAILED">Failed</option>
+        <option value="PENDING">Pending</option>
+        <option value="REVERSED">Reversed</option>
+        <option value="REFUNDED">Refunded</option>
+        <option value="COMPLETED">Completed</option>
+        <option value="INITIATED">Initiated</option>
+        <option value="ACCEPTED">Accepted</option>
+        <option value="REVERSE">Reverse</option>
+      </select>
+
+      <span className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 text-xs">
+        ▼
+      </span>
+    </div>
+
+  </div>
+</div>
 
           <div className="overflow-x-auto">
             <Table
@@ -376,7 +392,7 @@ const lineChartData = useMemo(() => monthwiseData || [], [monthwiseData]);
 
           
           </div>
-        </div> */}
+        </div> 
       </div>
     </div>
   );

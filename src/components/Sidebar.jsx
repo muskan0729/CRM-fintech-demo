@@ -1,144 +1,67 @@
-import { useState } from "react";
+import { useState,useRef } from "react";
 import { Link, useLocation } from "react-router-dom";
 import "../css/sidebar.css";
 import Logo from "../images/logo.png";
 
-export const Sidebar = ({ open, setOpen }) => {
+export const Sidebar = ({ open, setOpen,openProfile }) => {
   const role = atob(localStorage.getItem("role")); // admin / user / crypto
   const [activeDropdown, setActiveDropdown] = useState(null);
+  const dropdownRef = useRef(null);
 
   const location = useLocation();
   const currentPath = location.pathname;
+
 
   const toggleDropdown = (name) => {
     setActiveDropdown((prev) => (prev === name ? null : name));
   };
 
+
   // MENU CONFIG - unchanged
-  const menu = [
-    { label: "Dashboard", icon: "fa-chart-pie", link: "/dashboard" },
+ const menu = [
+  { label: "Dashboard", icon: "fa-chart-pie", link: "/dashboard" },
 
-    ...(role === "admin"
-      ? [
-          {
-            label: "Scheme Manager",
-            icon: "fa-money-check",
-            dropdown: "scheme",
-            items: [{ label: "Scheme", link: "/scheme" }],
-          },
-          {
-            label: "Member",
-            icon: "fa-user-group",
-            dropdown: "member",
-            items: [{ label: "Merchant Onboarding", link: "/member-list" }],
-          },
-          {
-            label: "Fund",
-            icon: "fa-piggy-bank",
-            dropdown: "fund",
-            items: [
-              { label: "Load Wallet", link: "/load-wallet" },
-              { label: "Payin Settlement", link: "/payin-settlement" },
-            ],
-          },
-          {
-            label: "Onboard Bank",
-            icon: "fa-building-columns",
-            dropdown: "bank",
-            items: [{ label: "Bank", link: "/onboard-bank" }],
-          },
-          {
-            label: "Transaction History",
-            icon: "fa-clock-rotate-left",
-            dropdown: "txn",
-            items: [
-              { label: "UPI Statement", link: "/upi-statement" },
-              { label: "Payout Statement", link: "/payout-statement" },
-            ],
-          },
-          {
-            label: "Account Statement",
-            icon: "fa-layer-group",
-            dropdown: "account",
-            items: [
-              { label: "Topup Statement", link: "/topup-statement" },
-              { label: "Settlement Payin Statement", link: "/settlement-payin-statement" },
-            ],
-          },
-          {
-            label: "VPA",
-            icon: "fa-money-bill-transfer",
-            dropdown: "payment1",
-            items: [{ label: "Request1", link: "/vpa" }],
-          },
-        ]
-      : []),
+  ...(role === "admin"
+    ? [
+        { label: "Scheme", icon: "fa-money-check", link: "/scheme" },
+        { label: "Merchant Onboarding", icon: "fa-user-group", link: "/member-list" },
 
-    ...(role === "user"
-      ? [
-          {
-            label: "Payout",
-            icon: "fa-credit-card",
-            dropdown: "payout",
-            items: [{ label: "Request", link: "/payout-request" }],
-          },
-          {
-            label: "Payin",
-            icon: "fa-money-bill-transfer",
-            dropdown: "payin",
-            items: [{ label: "Request", link: "/payin-request" }],
-          },
-          {
-            label: "Transaction History",
-            icon: "fa-clock-rotate-left",
-            dropdown: "txn",
-            items: [
-              { label: "UPI Statement", link: "/upi-statement" },
-              { label: "Payout Statement", link: "/payout-statement" },
-            ],
-          },
-          {
-            label: "Account Statement",
-            icon: "fa-layer-group",
-            dropdown: "account",
-            items: [
-              { label: "Topup Statement", link: "/topup-statement" },
-              { label: "Settlement Payin Statement", link: "/settlement-payin-statement" },
-            ],
-          },
-          {
-            label: "Api Settings",
-            icon: "fa-gears",
-            dropdown: "api",
-            items: [{ label: "Callback & Token", link: "/api-settings" }],
-          },
-          {
-            label: "API Documents",
-            icon: "fa-money-check",
-            dropdown: "apidoc",
-            items: [
-              { label: "Payin Documents", link: "/payin-doc" },
-              { label: "Payout Documents", link: "/payout-doc" },
-            ],
-          },
-        ]
-      : []),
-           { 
-            label: "Chargeback Statement", 
-            icon: "fa-chart-pie", 
-            link: "/Chargeback" 
-          },
-    ...(role === "crypto"
-      ? [
-          {
-            label: "Transaction History",
-            icon: "fa-clock-rotate-left",
-            dropdown: "txn",
-            items: [{ label: "Crypto Statement", link: "/crypto-statement" }],
-          },
-        ]
-      : []),
-  ];
+        { label: "Load Wallet", icon: "fa-piggy-bank", link: "/load-wallet" },
+        { label: "Payin Settlement", icon: "fa-piggy-bank", link: "/payin-settlement" },
+
+        { label: "Bank", icon: "fa-building-columns", link: "/onboard-bank" },
+
+        { label: "UPI Statement", icon: "fa-clock-rotate-left", link: "/upi-statement" },
+        { label: "Payout Statement", icon: "fa-clock-rotate-left", link: "/payout-statement" },
+
+        { label: "Topup Statement", icon: "fa-layer-group", link: "/topup-statement" },
+        { label: "Settlement Payin", icon: "fa-layer-group", link: "/settlement-payin-statement" },
+
+        { label: "VPA", icon: "fa-money-bill-transfer", link: "/vpa" },
+      ]
+    : []),
+
+  ...(role === "user"
+    ? [
+        { label: "Payout Request", icon: "fa-credit-card", link: "/payout-request" },
+        { label: "Payin Request", icon: "fa-money-bill-transfer", link: "/payin-request" },
+
+        { label: "UPI Statement", icon: "fa-clock-rotate-left", link: "/upi-statement" },
+        { label: "Payout Statement", icon: "fa-clock-rotate-left", link: "/payout-statement" },
+
+        { label: "Topup Statement", icon: "fa-layer-group", link: "/topup-statement" },
+        { label: "Settlement Payin", icon: "fa-layer-group", link: "/settlement-payin-statement" },
+
+        { label: "API Settings", icon: "fa-gears", link: "/api-settings" },
+        { label: "Payin Docs", icon: "fa-file", link: "/payin-doc" },
+        { label: "Payout Docs", icon: "fa-file", link: "/payout-doc" },
+      ]
+    : []),
+
+  // { label: "Chargeback", icon: "fa-chart-pie", link: "/Chargeback" },
+
+
+];
 
   return (
     <>
@@ -159,137 +82,101 @@ export const Sidebar = ({ open, setOpen }) => {
         onClick={() => setOpen(false)}
       />
 
+      {/* Sidebar Toggle Button */}
+{/* Sidebar Toggle Button */}
+<button
+  onClick={() => setOpen(!open)}
+className={`fixed top-5 left-5 z-50 p-3 rounded-lg transition-all duration-300
+    ${open 
+      ? "bg-[#023842] text-white shadow-lg" 
+      : "bg-transparent text-[#023842] shadow-none"}
+  `}>
+  <i className={`fa-solid ${open ? "fa-xmark" : "fa-bars"} text-lg`} />
+</button>
+
       {/* Sidebar - Light blue theme */}
-    <div
+   <div
   className={`fixed top-0 left-0 h-full w-64 md:w-72 flex flex-col
     bg-[#023842] text-slate-200
     shadow-xl border-r border-[#03535F]
-    z-40 transform transition-transform duration-400 ease-out
-    md:translate-x-0 ${open ? "translate-x-0" : "-translate-x-full"} scrollbar-hide`}
+    z-40 transform transition-transform duration-300 ease-out
+    ${open ? "translate-x-0" : "-translate-x-full"}`}
 >
         {/* Mobile Close Button */}
-        <button
-          className="absolute top-5 right-5 text-blue-700 hover:text-blue-900 transition-colors md:hidden z-10"
+        {/* <button
+          className="absolute top-5 right-5 text-white hover:text-gray-300 transition-colors md:hidden z-10"
           onClick={() => setOpen(false)}
           aria-label="Close sidebar"
         >
           <i className="fa-solid fa-xmark text-2xl" />
-        </button>
+        </button> */}
 
         {/* Logo - Larger size restored */}
 <div className="flex-shrink-0 py-6 px-6 flex justify-center border-b border-[#023842]/20">
   <Link to="/dashboard">
     <div className="w-20 h-20 md:w-24 md:h-24 bg-white rounded-full flex items-center justify-center shadow-md overflow-hidden">
       <img
-        src={Logo}
-        className="w-20 md:w-14 object-contain"
-        alt="Spay Logo"
+        // src={Logo}
+        src="data:image/png;base64,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"
+        className="w-20 md:w-14 object-cover"
+        alt="company Logo"
       />
     </div>
   </Link>
 </div>
 
         {/* Menu Items */}
-        <ul className="flex-1 overflow-y-auto py-4 px-3 space-y-1.5 scrollbar-hide">
-          {menu.map((item, i) => {
-            const isParentActive =
-              item.items?.some((sub) => sub.link === currentPath) ?? false;
+   <ul className="flex-1 overflow-y-auto py-4 px-3 space-y-2 scrollbar-hide">
+  {menu.map((item, i) => {
+    const isActive = currentPath === item.link;
 
-            return (
-              <li key={i}>
-                {/* Simple Menu Item */}
-                {!item.dropdown ? (
-                  <Link
-                    to={item.link}
-                    className={`group flex items-center gap-3.5 px-4 py-3 rounded-xl transition-all duration-200 cursor-pointer
-                      ${
-                        currentPath === item.link
-                          ? "bg-[#0F4C5C] text-white font-semibold border-l-4 border-white"
-  : "text-slate-300 hover:bg-[#03535F] hover:text-white"
-                      }`}
-                  >
-                    <i
-                      className={`fa-solid ${item.icon} w-6 text-center text-slate-300 group-hover:text-white group-hover:text-blue-700 transition-colors`}
-                    />
-                    <span className="text-sm">{item.label}</span>
-                  </Link>
-                ) : (
-                  <>
-                    {/* Dropdown Toggle Button */}
-                    <button
-                      className={`group flex items-center gap-3.5 w-full px-4 py-3 rounded-xl transition-all duration-200 cursor-pointer
-                        ${
-                          isParentActive || activeDropdown === item.dropdown
-                              ? "bg-[#0F4C5C] text-white border-l-4 border-white"
-  : "text-slate-300 hover:bg-[#03535F] hover:text-white"
-                        }`}
-                      onClick={() => toggleDropdown(item.dropdown)}
-                    >
-                      <i
-                        className={`fa-solid ${item.icon} w-6 text-center text-slate-300 group-hover:text-white group-hover:text-blue-700 transition-colors`}
-                      />
-                      <span className="flex-1 text-left text-sm">{item.label}</span>
+    return (
+      <li key={i}>
+        <Link
+          to={item.link}
+          className={`group flex items-center gap-3.5 px-4 py-3 rounded-xl transition-all duration-200
+            ${
+              isActive
+                ? "bg-[#0F4C5C] text-white font-semibold border-l-4 border-cyan-400 shadow-md"
+                : "text-slate-300 hover:bg-[#03535F] hover:text-white"
+            }`}
+        >
+          <i
+            className={`fa-solid ${item.icon} w-6 text-center transition-colors
+              ${isActive ? "text-white" : "text-slate-400 group-hover:text-white"}
+            `}
+          />
 
-                      <svg
-                        className={`w-3 h-3 transition-transform duration-300 ${
-                          activeDropdown === item.dropdown ? "rotate-180" : ""
-                        }`}
-                        fill="none"
-                        viewBox="0 0 10 6"
-                      >
-                        <path
-                          stroke="currentColor"
-                          strokeWidth="2"
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                          d="m1 1 4 4 4-4"
-                        />
-                      </svg>
-                    </button>
+          <span className="text-sm">{item.label}</span>
+        </Link>
+      </li>
+    );
+  })}
+</ul>
 
-                    {/* Dropdown Content */}
-                    <div
-                      className={`transition-all duration-300 ease-in-out overflow-hidden
-                        ${activeDropdown === item.dropdown ? "max-h-96 opacity-100 mt-1" : "max-h-0 opacity-0 mt-0"} scrollbar-hide`}
-                    >
-                      <div className="space-y-1 py-1 pl-2">
-                        {item.items.map((sub, j) => {
-                          const isActive = currentPath === sub.link;
+  <div className="px-2 pb-3 border-t border-blue-200/20">
+  <button
+    onClick={() => {
+      setOpen(false);
+      openProfile();
+    }}
+    className="group flex items-center gap-3.5 w-full px-4 py-3 mt-2 rounded-xl
+               text-slate-300 hover:bg-[#03535F] hover:text-white 
+               transition-all duration-200"
+  >
+    <i className="fa-solid fa-user w-6 text-center text-slate-300 group-hover:text-white transition-colors" />
 
-                          return (
-                            <Link key={j} to={sub.link}>
-                              <div
-                                className={`flex items-center gap-2.5 px-5 py-2.5 rounded-lg text-sm transition-all duration-200 cursor-pointer
-                                  ${
-                                    isActive
-                                     ? "bg-[#0F4C5C] text-white border-l-4 border-white"
-  : "text-slate-400 hover:bg-[#03535F] hover:text-white"
-                                  }`}
-                              >
-                                <i
-                                  className={`fa-solid fa-circle text-[7px] ${
-                                    isActive ? "text-slate-300 group-hover:text-white" : "text-blue-300"
-                                  }`}
-                                />
-                                {sub.label}
-                              </div>
-                            </Link>
-                          );
-                        })}
-                      </div>
-                    </div>
-                  </>
-                )}
-              </li>
-            );
-          })}
-        </ul>
+    <span className="text-sm font-semibold">
+      Profile
+    </span>
+  </button>
 
-        {/* Footer */}
-        <div className="px-4 py-3 text-xs text-slate-300 group-hover:text-white/70 text-center border-t border-blue-200/50">
-          SPay Fintech Pvt Ltd Dashboard • {new Date().getFullYear()}
-        </div>
+  <div className="text-center text-xs text-slate-400 mt-2">
+    Company name • {new Date().getFullYear()}
+  </div>
+</div>
       </div>
+      
     </>
   );
 };
