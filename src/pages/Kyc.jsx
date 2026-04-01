@@ -1088,16 +1088,18 @@ formData.append("vkyc_session_id", memberFormData.vkyc_session_id);
                   <div
                     className="absolute inset-0 rounded-xl blur-md opacity-70"
                     style={{
-                      background:
-                        "linear-gradient(120deg, #2958da, #2F5BFF, #6A8CFF)",
+                      // background:
+                        // "linear-gradient(120deg, #2958da, #2F5BFF, #6A8CFF)",
+                         background:"var(--bg-gradient)"
                     }}
                   />
 
                   <div
                     className="relative rounded-xl px-6 py-4 flex items-center justify-between"
                     style={{
-                      background:
-                        "linear-gradient(275deg, #4b76eb, #1E40FF, #4F6FFF)",
+                      // background:
+                        // "linear-gradient(275deg, #4b76eb, #1E40FF, #4F6FFF)",
+                         background:"var(--bg-gradient)"
                     }}
                   >
                     <h4 className="text-2xl md:text-2xl font-bold text-white tracking-wide ml-52">

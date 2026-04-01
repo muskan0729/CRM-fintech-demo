@@ -4,7 +4,7 @@ import TableFilters from "../components/TableFilters";
 import { MONTH_NAMES, REPORT_STATUSES } from "../constants/Constants";
 import { TableSkeleton } from "../components/TableSkeleton";
 
-
+import { useNavigate } from "react-router-dom";
 
 const UpiStatement = () => {
 const [merchantOptions, setMerchantOptions] = useState([]);
@@ -31,6 +31,9 @@ const [totalRecords, setTotalRecords] = useState(0);
 
   const [showConfirm, setShowConfirm] = useState(false);
 const [selectedRow, setSelectedRow] = useState(null);
+
+
+  const [showFilterSidebar, setShowFilterSidebar] = useState(false);
 
 
   const role = atob(localStorage.getItem("role"));
@@ -419,6 +422,7 @@ const handleAccept = async (row) => {
   header: "Order Id",
   accessor: "id",
   Cell: ({ row }) => {
+     const navigate = useNavigate();
     const created = new Date(row.created_at);
     const updated = new Date(row.updated_at);
 
@@ -439,7 +443,10 @@ const handleAccept = async (row) => {
             .toUpperCase();
 
     return (
-      <div className="flex flex-col text-left w-20">
+      <div className="flex flex-col text-left w-20"
+      //  onClick={() => navigate(`/txn-view/${row.id}`, { state: row })}
+       onClick={() => navigate(`/txn-view/${row.id}`)}
+       >
         {/* Order ID */}
         <span>
           <b>{row.id}</b>
@@ -598,29 +605,40 @@ const handleAccept = async (row) => {
 
   return (
     <div className="p-4 space-y-4">
-      <div
-        className="rounded-lg flex justify-between items-center p-4 shadow-md"
-        style={{
-          background: "linear-gradient(250deg, #55abe9ff 0%, #00418c 100%)",
-        }}
-      >
-        <div>
-          <h4 className="font-bold text-white text-xl">UPI Statement</h4>
-          <p className="text-white/90 text-sm mt-1 hidden">
-            Loaded: {filteredData.length}{" "}
-           
-          </p>
-        </div>
+   <div
+  className="rounded-lg flex justify-between items-center p-4 shadow-md"
+  style={{
+    background: "var(--bg-gradient)",
+  }}
+>
+  {/* LEFT SIDE */}
+  <h4 className="font-bold text-white text-xl">
+    UPI Statement
+  </h4>
 
-        {/* <button
-          onClick={handleRefreshData}
-          className="bg-white text-blue-700 px-4 py-2 rounded-lg text-sm font-semibold hidden"
-        >
-          Refresh
-        </button> */}
-      </div>
+  {/* RIGHT SIDE */}
+  <button
+    onClick={() => setShowFilterSidebar(true)}
+    className="bg-white text-black px-4 py-2 rounded-md font-medium hover:bg-gray-100 transition"
+  >
+     🔍Select Filter
+  </button>
+</div>
 
-      <TableFilters
+         {showFilterSidebar && (
+  <div className="fixed inset-0 z-50 flex">
+    
+    {/* Overlay */}
+    <div
+      className="absolute inset-0 bg-black/75 bg-opacity-50"
+      onClick={() => setShowFilterSidebar(false)}
+    ></div>
+
+    {/* Sidebar */}
+    <div className="relative ml-auto w-[350px] bg-white h-full shadow-lg p-4 overflow-y-auto">
+      
+      <h2 className="text-lg font-bold mb-4">Filters</h2>
+   <TableFilters
        merchantOptions={merchantOptions}
         rawData={filteredData}
         txnSearch={txnSearch}
@@ -644,6 +662,9 @@ const handleAccept = async (row) => {
         onClearAll={handleClearAll}
         totalSuccessAmount={totalSuccessAmount}
       />
+      </div></div>
+         )}
+   
 
      {loading && filteredData.length === 0 ? (
         <TableSkeleton />

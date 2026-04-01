@@ -574,7 +574,8 @@ Object.entries(params).forEach(([key, value]) => {
         <div
           className="rounded-lg flex justify-between items-center p-4 shadow-md"
           style={{
-            background: "linear-gradient(250deg, #55abe9ff 0%, #00418c 100%)",
+            // background: "linear-gradient(250deg, #55abe9ff 0%, #00418c 100%)",
+             background:"var(--bg-gradient)"
           }}
         >
           <div>

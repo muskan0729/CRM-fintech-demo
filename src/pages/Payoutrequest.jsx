@@ -229,7 +229,7 @@
                 flex justify-between items-center 
                 rounded-lg p-3"
             style={{
-              background: "linear-gradient(250deg, #2a91d9 0%, #00418c 100%)",
+              background:"var(--bg-gradient)"
             }}
           >
             <h4 className="font-bold text-white text-lg">Beneficiary List</h4>
@@ -270,7 +270,8 @@
               onClick={(e) => e.stopPropagation()}
             >
               {/* ✅ Modal Header */}
-              <div className="bg-gradient-to-r from-blue-500 via-blue-600 to-blue-700 text-white font-medium rounded-t-lg px-5 py-3 flex justify-between items-center">
+              <div className=" text-white font-medium rounded-t-lg px-5 py-3 flex justify-between items-center"
+              style={{background:"var(--bg-color)"}}>
                 <h3 className="text-lg font-semibold">Payout to Beneficiary</h3>
                 <Button
                   onClick={() => setShowModal(false)}
@@ -454,8 +455,9 @@
             >
               {/* Modal Header */}
               <div
-                className="text-white bg-gradient-to-r from-blue-500 via-blue-600 to-blue-700 
+                className="text-white 
                 font-medium rounded-t-lg text-sm px-5 py-3 flex justify-between items-center"
+                style={{background:"var(--bg-color)"}}
               >
                 <h4 className="font-bold text-white text-lg py-2">
                   Add Beneficiary Details
@@ -631,9 +633,10 @@
         disabled={isLoading}
         className={`${
           isLoading
-            ? "bg-blue-700 cursor-not-allowed opacity-80"
-            : "bg-blue-600 hover:bg-blue-700"
+            ? "cursor-not-allowed opacity-80"
+            : "hover:bg-blue-700"
         } text-white font-medium rounded-lg text-sm px-6 py-2.5 flex items-center`}
+        style={{background:"var(--bg-submit)"}}
       >
         {isLoading ? "Processing..." : "Submit"}
       </Button>

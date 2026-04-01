@@ -26,10 +26,10 @@ const menu = [
     ? [
         { label: "Scheme", icon: "fa-file-invoice-dollar", link: "/scheme" },
         { label: "Merchant Onboarding", icon: "fa-user-plus", link: "/member-list" },
-        { label: "Load Wallet", icon: "fa-wallet", link: "/load-wallet" },
-        { label: "Payin Settlement", icon: "fa-money-bill-transfer", link: "/payin-settlement" },
+        { label: "Wallet Settlement", icon: "fa-wallet", link: "/load-wallet" },
+        // { label: "Payin Settlement", icon: "fa-money-bill-transfer", link: "/payin-settlement" },
         { label: "Bank", icon: "fa-building-columns", link: "/onboard-bank" },
-        { label: "VPA", icon: "fa-at", link: "/vpa" },
+        // { label: "VPA", icon: "fa-at", link: "/vpa" },
       ]
     : []),
 

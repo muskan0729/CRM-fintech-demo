@@ -248,7 +248,7 @@ const handleLoadMore = () => {
     <div className="p-4 space-y-4">
       {/* Header */}
       <div className=" rounded-lg flex justify-between items-center p-4 shadow-md"
-      style={{ background: 'linear-gradient(250deg, #55abe9ff 0%, #00418c 100%)' }}>
+      style={{  background:"var(--bg-gradient)" }}>
         <h4 className="font-bold text-white text-xl">Load Wallet</h4>
       </div>
 

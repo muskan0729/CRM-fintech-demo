@@ -8,4 +8,7 @@
 :root {
   --primary-color: #03535F;
  --bg-color:#023842;
+ --bg-gradient:linear-gradient(to top, #023842 20%, #03535F 100%);
+ --bg-button:linear-gradient(to right, #0c7469, #2b3f3c);
+ --bg-submit:linear-gradient(to right, #0ea5a4, #2dd4bf);
 }

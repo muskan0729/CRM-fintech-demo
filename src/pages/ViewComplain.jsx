@@ -283,7 +283,7 @@ export const ViewComplain = () => {
           <div
             className="flex justify-between items-center rounded-lg p-4 shadow-md"
             style={{
-              background: "linear-gradient(275deg,#062f70ff,#0d3dc4ff)",
+               background:"var(--bg-gradient)"
             }}
           >
             <h4 className="font-bold text-white text-lg">View Complain</h4>

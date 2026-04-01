@@ -9,6 +9,8 @@ import { setSafeItem, getSafeItem, removeSafeItem } from "../utils/localSecure";
 
 const Acc_topup_settlement = () => {
   
+  const [showFilterSidebar, setShowFilterSidebar] = useState(false);
+
   const [loading, setLoading] = useState(true);
  
   const [error, setError] = useState(null);
@@ -481,22 +483,42 @@ const exportCSV = async () => {
 
   return (
     <div className="p-4 space-y-4">
-      <div
-        className="rounded-lg flex justify-between items-center p-4 shadow-md"
-        style={{
-          background: "linear-gradient(250deg, #55abe9ff 0%, #00418c 100%)",
-        }}
-      >
-        <div>
-          <h4 className="font-bold text-white text-xl">
-            Topup Settlement Statement
-          </h4>
-         
-        </div>
-      </div>
+<div
+  className="rounded-lg flex justify-between items-center p-4 shadow-md"
+  style={{
+    background: "var(--bg-gradient)",
+  }}
+>
+  {/* LEFT SIDE */}
+  <h4 className="font-bold text-white text-xl">
+    Topup Settlement Statement
+  </h4>
+
+  {/* RIGHT SIDE */}
+  <button
+    onClick={() => setShowFilterSidebar(true)}
+    className="bg-white text-black px-4 py-2 rounded-md font-medium hover:bg-gray-100 transition"
+  >
+     🔍Select Filter
+  </button>
+</div>
+
+     {showFilterSidebar && (
+  <div className="fixed inset-0 z-50 flex">
+    
+    {/* Overlay */}
+    <div
+      className="absolute inset-0 bg-black/75 bg-opacity-50"
+      onClick={() => setShowFilterSidebar(false)}
+    ></div>
+
+    {/* Sidebar */}
+    <div className="relative ml-auto w-[350px] bg-white h-full shadow-lg p-4 overflow-y-auto">
+      
+      <h2 className="text-lg font-bold mb-4">Filters</h2>
 
       <TableFilters
-      merchantOptions={merchantOptions}
+        merchantOptions={merchantOptions}
         rawData={filteredData}
         txnSearch={txnSearch}
         setTxnSearch={setTxnSearch}
@@ -509,15 +531,37 @@ const exportCSV = async () => {
         selectedMerchant={selectedMerchant}
         setSelectedMerchant={setSelectedMerchant}
         statusList={REPORT_STATUSES}
-        showExport={true}
+        showExport={true} // optional inside sidebar
+                onExportCSV={exportCSV}
+          exporting={exporting}
         showStatusFilter={true}
         showDateFilter={true}
         showSelectUserFilter={true}
-        onExportCSV={exportCSV}
-          exporting={exporting}
-        onClearAll={handleClearAll}
         totalSuccessAmount={totalSuccessAmount}
       />
+
+      {/* Buttons */}
+      <div className="flex gap-2 mt-4">
+        <button
+          onClick={() => {
+            fetchFilteredData();   // trigger API
+            setShowFilterSidebar(false); // close sidebar
+          }}
+          className="bg-blue-600 text-white px-4 py-2 rounded"
+        >
+          Apply
+        </button>
+
+        <button
+          onClick={handleClearAll}
+          className="bg-gray-400 text-white px-4 py-2 rounded"
+        >
+          Clear
+        </button>
+      </div>
+    </div>
+  </div>
+)}
 
       {loading  ? (
         <TableSkeleton />

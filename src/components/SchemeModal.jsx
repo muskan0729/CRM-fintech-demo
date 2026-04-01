@@ -224,7 +224,7 @@ useEffect(() => {
         onClick={(e) => e.stopPropagation()}
       >
         <div className="text-white font-medium rounded-t-lg px-5 py-3 flex justify-between items-center"
-        style={{ background: "linear-gradient(275deg, #062f70ff, #0d3dc4ff)" }}>
+        style={{ background:"var(--bg-gradient)" }}>
           <h3 className="text-lg font-semibold">
             {schemeData  ? "Edit Scheme" : "Add New Scheme"}
           </h3>
@@ -266,14 +266,14 @@ useEffect(() => {
                 return (
                   <li
                     key={tab}
-                    className={`me-2 hover:text-blue-900 ${
-                      activeTab === tab ? "text-blue-500" : "text-gray-500"
+                    className={`me-2 hover:text-[var(--bg-button)] ${
+                      activeTab === tab ? "text-[var(--bg-submit)]" : "text-gray-500"
                     }`}
                   >
                     <Button
                       type="button"
                       onClick={() => setActiveTab(tab)}
-                      className="inline-flex items-center justify-center p-4 border-b-2 border-transparent rounded-t-lg hover:border-blue-900 group"
+                      className="inline-flex items-center justify-center p-4 border-b-2 border-transparent rounded-t-lg hover:border-[var(--bg-button)] group"
                     >
                       <i className={`fa-solid ${icons[idx]} me-2`}></i>
                       {tabInfo[idx]}
@@ -288,7 +288,7 @@ useEffect(() => {
           <div className="relative">
             <table className="text-sm text-left text-gray-500 w-full">
               <thead className="text-md text-white uppercase "
-              style={{ background: "linear-gradient(275deg, #062f70ff, #0d3dc4ff)" }}>
+              style={{  background:"var(--bg-gradient)" }}>
                 <tr>
                   <th className="px-6 py-3">Operator</th>
                   <th className="px-6 py-3">Type</th>
@@ -463,7 +463,7 @@ useEffect(() => {
                     </tr>
 
                     {/* Rolling Fixed */}
-                    <tr className="border-b border-gray-500">
+                    {/* <tr className="border-b border-gray-500">
                       <td className="px-6 py-4 font-medium text-gray-900">
                         <label className="flex items-center space-x-2 cursor-pointer">
                           <input
@@ -510,7 +510,7 @@ useEffect(() => {
                           className="w-full border rounded-lg p-2 text-sm"
                         />
                       </td>
-                    </tr>
+                    </tr> */}
                   </>
                 )}
 
@@ -543,7 +543,8 @@ useEffect(() => {
             <Button
               type="submit"
               disabled={creating || updating}
-              className="cursor-pointer text-white bg-blue-600 hover:bg-blue-700 px-5 py-2 rounded-lg"
+              className="cursor-pointer text-[#023842] hover:bg-blue-400 px-5 py-2 rounded-lg font-bold"
+              style={{ background:"var(--bg-submit)"}}
             >
               {editData ? "Update" : "Submit"}
             </Button>

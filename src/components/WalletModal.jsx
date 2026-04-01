@@ -69,14 +69,13 @@ export default function WalletModal({
         className="bg-white rounded-xl shadow-2xl w-full max-w-md mx-4 overflow-hidden"
         onClick={(e) => e.stopPropagation()}
       >
-        <div className="bg-gradient-to-r from-blue-500 via-blue-600 to-blue-700 text-white px-6 py-4 flex justify-between items-center">
+        <div className=" text-white px-6 py-4 flex justify-between items-center"
+        style={{ background:"var(--bg-color)"}}>
           <div>
             <h3 className="text-lg font-semibold">
               {mode === "load" ? "Load Wallet" : "Reverse / Return Funds"}
             </h3>
-            <p className="text-sm opacity-90 mt-1">
-              {merchant.name || "Merchant"}
-            </p>
+
           </div>
           <button
             onClick={onClose}
@@ -88,6 +87,9 @@ export default function WalletModal({
 
         <form onSubmit={handleSubmit} className="p-6 space-y-5">
           <div>
+                        <p className="text-sm opacity-90 mb-1">
+              {merchant.name || "Merchant"} :
+            </p>
             <label className="block text-sm font-medium text-gray-700 mb-1.5">
               Amount
             </label>
@@ -128,9 +130,8 @@ export default function WalletModal({
             </button>
             <button
               type="submit"
-              className={`flex-1 py-2.5 text-white font-medium rounded-lg transition ${
-                mode === "load" ? "bg-blue-600 hover:bg-blue-700" : "bg-blue-400 hover:bg-blue-700"
-              }`}
+              className={`flex-1 py-2.5 text-[var(--bg-color)] font-bold rounded-lg transition `}
+              style={{ background:"var(--bg-submit)"}}
             >
               {mode === "load" ? "Load Wallet" : "Return Funds"}
             </button>

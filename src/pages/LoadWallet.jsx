@@ -15,6 +15,17 @@ const [walletModalOpen, setWalletModalOpen] = useState(false);
 const [selectedMerchant, setSelectedMerchant] = useState(null);
 const [modalMode, setModalMode] = useState("load");
 
+const [showPayinModal, setShowPayinModal] = useState(false);
+const [selectedUser, setSelectedUser] = useState(null);
+
+const [payinFormData, setPayinFormData] = useState({
+  payin_wallet: "",
+  remark: "",
+});
+
+const toast = useToast();
+const { execute: payinSettlement } = usePost("/payin-settlement");
+
   const [rawData, setRawData] = useState([]);
 const [walletData, setWalletData] = useState([]);
 
@@ -102,6 +113,7 @@ useEffect(() => {
     id: item.id,
     name: item.name,
     payout_wallet: item.payout_wallet,
+    payin_wallet: item.payin_wallet,
   }));
 
   setWalletData(formatted);
@@ -115,49 +127,109 @@ const handleLoadMore = () => {
 
   const membercolumn = [
     { header: "User Id", accessor: "id" },
-    { header: "Merchant", accessor: "name" },
+    { header: "Merchant", accessor: "name"},
     { header: "Payout Wallet", accessor: "payout_wallet" },
+      { header: "Payin Wallet", accessor: "payin_wallet" },
     { header: "Action", accessor: "action" },
   ];
 
   const tableDataWithActions = walletData?.map((row) => ({
     ...row,
+   name:(
+   <div style={{ width: "150px"}}>
+    {row.name}
+   </div>
+   ),
+ 
    action: (
-  <div className="flex items-center justify-start gap-2">
+  <div className="flex flex-col items-start gap-2">
     <Button
             onClick={() => {
         setSelectedMerchant(row);
         setModalMode("load");
         setWalletModalOpen(true);
       }}
-      className="bg-blue-600 hover:bg-blue-700 text-white text-sm font-medium px-4 py-1.5 rounded-md shadow-md transition-all"
+      className=" hover:bg-blue-700 text-white text-sm font-medium px-4 py-1.5 rounded-md shadow-md transition-all"
+    style={{ background:"var(--bg-button)"}}
     >
-      Load Wallet
+      Top-up Wallet
     </Button>
-    <Button
-      // onClick={() => {
-      //   setSelectedUser(row);
-      //   setModalType("reverse");
-      //   setShowModal(true);
-      // }}
+        <Button
+      onClick={() => {
+        setSelectedUser(row);
+        setShowPayinModal(true);
+      }}
+      className="text-white text-sm font-medium px-4 py-1.5 rounded-md shadow-md transition-all"
+      style={{ background: "var(--bg-button)" }}
+    >
+      Payment Settlement
+    </Button>
+    {/* <Button
+
             onClick={() => {
         setSelectedMerchant(row);
         setModalMode("reverse");
         setWalletModalOpen(true);
       }}
-      className="bg-blue-400 hover:bg-blue-500 text-white text-sm font-medium px-4 py-1.5 rounded-md shadow-md transition-all"
-    >
+      className=" hover:bg-blue-500 text-white text-sm font-medium px-4 py-1.5 rounded-md shadow-md transition-all"
+  style={{ background:"var(--bg-button)"}}
+  >
       Reverse Top-up
-    </Button>
+    </Button> */}
   </div>
 ),}));
+
+
+// payin settlement
+const handlePayinChange = (e) => {
+  setPayinFormData({
+    ...payinFormData,
+    [e.target.name]: e.target.value,
+  });
+};
+
+const handlePayinSubmit = async (e) => {
+  e.preventDefault();
+
+  const payload = {
+    user_id: selectedUser.id,
+    payin_wallet: payinFormData.payin_wallet,
+    remark: payinFormData.remark,
+  };
+
+  try {
+    const res = await payinSettlement(payload);
+
+    if (res) {
+      toast.success("Settlement done successfully!!");
+
+      // refresh table
+      setRawData([]);
+      setWalletData([]);
+      setCursor(null);
+      setHasMore(true);
+      lastCursorRef.current = null;
+
+      fetchMerchants(true);
+      setShowPayinModal(false);
+    }
+  } catch (err) {
+    const errorMessage =
+      err?.response?.data?.message ||
+      err?.data?.message ||
+      err?.message ||
+      "Something went wrong!";
+
+    toast.error(errorMessage);
+  }
+};
 
   return (
     <div className="p-4 space-y-4">
       {/* Header */}
       <div className=" rounded-lg flex justify-between items-center p-4 shadow-md"
-      style={{ background: 'linear-gradient(250deg, #55abe9ff 0%, #00418c 100%)' }}>
-        <h4 className="font-bold text-white text-xl">Load Wallet</h4>
+      style={{  background:"var(--bg-gradient)" }}>
+        <h4 className="font-bold text-white text-xl">Wallet Settlement</h4>
       </div>
 
       {/* Table */}
@@ -198,6 +270,57 @@ const handleLoadMore = () => {
     fetchMerchants(true);
   }}
 />
+
+
+{showPayinModal && (
+  <div
+    className="fixed inset-0 flex items-center justify-center bg-black/30 backdrop-blur-sm z-50"
+    onClick={() => setShowPayinModal(false)}
+  >
+    <div
+      className="bg-white  rounded-lg shadow-lg max-w-md w-full mx-2"
+      onClick={(e) => e.stopPropagation()}
+    >
+      
+      {/* Header */}
+      <div className=" text-white px-5 py-3 rounded-t-lg flex justify-between"
+      style={{background:"var(--bg-color)"}}>
+        <h3 className="font-semibold">
+          Payin Settlement for {selectedUser?.name}
+        </h3>
+        <button onClick={() => setShowPayinModal(false)}>✕</button>
+      </div>
+
+      {/* Body */}
+      <form onSubmit={handlePayinSubmit} className="p-5 space-y-4">
+        <input
+          type="number"
+          name="payin_wallet"
+          placeholder="Enter Amount"
+          value={payinFormData.payin_wallet}
+          onChange={handlePayinChange}
+          className="w-full border p-2 rounded-lg"
+        />
+
+        <textarea
+          name="remark"
+          placeholder="Enter Remark"
+          value={payinFormData.remark}
+          onChange={handlePayinChange}
+          className="w-full border p-2 rounded-lg"
+        />
+
+        <Button
+          type="submit"
+          className="w-full text-[var(--bg-color)] font-bold py-2 rounded-lg"
+          style={{ background: "var(--bg-submit)" }}
+        >
+          Submit
+        </Button>
+      </form>
+    </div>
+  </div>
+)}
     </div>
 
   );

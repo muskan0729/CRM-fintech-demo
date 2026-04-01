@@ -52,7 +52,7 @@ export const BankModal = ({ showModal, handleModal, activeTab, refreshTable }) =
             onClick={(e) => e.stopPropagation()}
           >
             <div
-              className="text-white bg-gradient-to-r from-blue-500 via-blue-600 to-blue-700 
+              className="text-white bg-[var(--bg-color)]
               font-medium rounded-t-lg text-sm px-5 py-3 flex justify-between items-center"
             >
               <h4 className="font-bold text-white text-lg py-2">
@@ -110,7 +110,8 @@ export const BankModal = ({ showModal, handleModal, activeTab, refreshTable }) =
                 <Button
                   type="submit"
                   disabled={loading}
-                  className={`cursor-pointer text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 text-center ${loading ? "opacity-50 cursor-not-allowed" : ""}`}
+                  className={`cursor-pointer text-white hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 text-center ${loading ? "opacity-50 cursor-not-allowed" : ""}`}
+                  style={{background:"var(--bg-submit)"}}
                 >
                   {loading ? "Saving..." : "Save"}
                 </Button>

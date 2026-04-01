@@ -442,7 +442,7 @@ const handleSubmit = async (e) => {
   return (
     <>
       <div className=" flex justify-between items-center mb-3 p-2.5"
-      style={{ background: "linear-gradient(275deg, #062f70ff, #0d3dc4ff)" }}>
+      style={{  background:"var(--bg-gradient)" }}>
         <h4 className="font-bold text-white text-lg py-2">
           {/* Add New Merchant Details */}
           {

@@ -12,6 +12,8 @@ const Acc_upi_setlement = () => {
 const [merchantOptions, setMerchantOptions] = useState([]);
 
 const [exporting, setExporting] = useState(false);
+  const [showFilterSidebar, setShowFilterSidebar] = useState(false);
+
 
 
     const [totalSuccessAmount, setTotalSuccessAmount] = useState(0);
@@ -483,25 +485,38 @@ const exportCSV = async () => {
 
   return (
     <div className="p-4 space-y-4">
-      <div
-        className="rounded-lg flex justify-between items-center p-4 shadow-md"
-        style={{
-          background: "linear-gradient(250deg, #55abe9ff 0%, #00418c 100%)",
-        }}
-      >
-        <div>
-          <h4 className="font-bold text-white text-lg sm:text-xl">
-            Payin Settlement Statement
-          </h4>
-          {/* <p className="text-white/90 text-sm mt-1 hidden">
-            Loaded: {allPayinSettlementData.length}{" "}
-            {allLoaded ? "(All records loaded)" : "(Loading in background...)"}
-          </p> */}
-        </div>
+<div
+  className="rounded-lg flex justify-between items-center p-4 shadow-md"
+  style={{
+    background: "var(--bg-gradient)",
+  }}
+>
+  {/* LEFT SIDE */}
+  <h4 className="font-bold text-white text-xl">
+  Payin Settlement Statement  </h4>
 
-      </div>
+  {/* RIGHT SIDE */}
+  <button
+    onClick={() => setShowFilterSidebar(true)}
+    className="bg-white text-black px-4 py-2 rounded-md font-medium hover:bg-gray-100 transition"
+  >
+     🔍Select Filter
+  </button>
+</div>
+   {showFilterSidebar && (
+  <div className="fixed inset-0 z-50 flex">
+    
+    {/* Overlay */}
+    <div
+      className="absolute inset-0 bg-black/75 bg-opacity-50"
+      onClick={() => setShowFilterSidebar(false)}
+    ></div>
 
-      <TableFilters
+    {/* Sidebar */}
+    <div className="relative ml-auto w-[350px] bg-white h-full shadow-lg p-4 overflow-y-auto">
+      
+      <h2 className="text-lg font-bold mb-4">Filters</h2>
+          <TableFilters
         // rawData={allPayinSettlementData}
         merchantOptions={merchantOptions}
             rawData={filteredData}
@@ -525,6 +540,9 @@ const exportCSV = async () => {
         onClearAll={handleClearAll}
         totalSuccessAmount={totalSuccessAmount}
       />
+      </div></div>
+      )}
+  
 
       {loading ? (
         <TableSkeleton />

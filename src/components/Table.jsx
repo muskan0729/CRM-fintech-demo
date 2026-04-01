@@ -69,80 +69,49 @@ const paginatedData = useMemo(() => {
   return (
 <div className="bg-white shadow-[0_8px_30px_rgba(0,0,0,0.08)] border border-slate-200 overflow-hidden">
   <div className="overflow-x-auto">
-    <table className="w-full text-sm text-left">
-
-      {/* HEADER */}
-      <thead className="text-xs uppercase bg-[#033b44] text-slate-300">
-        <tr>
-          {columns.map((col, idx) => (
-            <th
-              key={idx}
-              className="px-5 py-4 font-semibold tracking-wide"
-            >
-              {col.header}
-            </th>
-          ))}
-
-          {showDeleteColumn && (
-            <th className="px-5 py-4">Delete</th>
-          )}
-        </tr>
-      </thead>
-
-      {/* BODY */}
-<tbody className="bg-white">
+    <div className="flex flex-col gap-4">
   {paginatedData.length ? (
     paginatedData.map((row, idx) => (
-      <tr
+      <div
         key={row.id || idx}
-        className={`
-          transition-all duration-300
-          bg-[#365458]/15 
-          hover:bg-[#04606F]/60
-          backdrop-blur-sm
-        `}
-        style={{
-          boxShadow: "0 4px 14px rgba(0,0,0,0.15)",
-        }}
+        className="bg-[#f6f3ef] rounded-2xl shadow-md p-6 border border-gray-200 relative"
       >
-        {columns.map((col, ci) => (
-          <td
-            key={ci}
-            className="px-4 py-4 text-[#033b44] text-[15px] leading-5 break-words"
-            style={{ fontFamily: "Inter, sans-serif" }}
-          >
-            {col.Cell
-              ? col.Cell({ value: row[col.accessor], row })
-              : row[col.accessor]}
-          </td>
-        ))}
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-6 text-sm">
 
+          {columns.map((col, ci) => (
+            <div key={ci} className="flex flex-col">
+              <span className="text-gray-500 text-xs uppercase font-semibold">
+                {col.header}
+              </span>
+
+              <span className="text-[#033b44] font-medium mt-1">
+                {col.Cell
+                  ? col.Cell({ value: row[col.accessor], row })
+                  : row[col.accessor]}
+              </span>
+            </div>
+          ))}
+
+        </div>
+
+        {/* Delete Button */}
         {showDeleteColumn && (
-          <td className="px-4 py-4 text-center">
-            <button
-              type="button"
-              onClick={() => handleConfirmModal(row.id)}
-              className="text-red-400 hover:text-red-300 transition"
-            >
-              <i className="fa-solid fa-trash fa-lg"></i>
-            </button>
-          </td>
+          <button
+            onClick={() => handleConfirmModal(row.id)}
+            className="absolute bottom-4 right-4 bg-red-100 hover:bg-red-200 p-3 rounded-xl"
+          >
+            <i className="fa-solid fa-trash text-red-500"></i>
+          </button>
         )}
-      </tr>
+      </div>
     ))
   ) : (
-          <tr>
-            <td
-              colSpan={columns.length}
-              className="text-center py-10 text-slate-400"
-            >
-              <img src={nodata} className="mx-auto h-24 opacity-70" />
-              <p className="mt-2">No data found</p>
-            </td>
-          </tr>
-        )}
-      </tbody>
-    </table>
+    <div className="text-center py-10 text-gray-400">
+      <img src={nodata} className="mx-auto h-24 opacity-70" />
+      <p className="mt-2">No data found</p>
+    </div>
+  )}
+</div>
   </div>
 
   {/* PAGINATION */}

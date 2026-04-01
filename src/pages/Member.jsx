@@ -583,7 +583,7 @@ export const Member = () => {
     <div className="p-4 space-y-4">
       <div
         className="rounded-lg flex justify-between items-center p-4 shadow-md"
-        style={{ background: "linear-gradient(275deg, #062f70ff, #0d3dc4ff)" }}
+        style={{  background:"var(--bg-gradient)" }}
       >
         <h4 className="font-bold text-white text-xl">Member List</h4>
 
@@ -623,6 +623,7 @@ export const Member = () => {
         <TableFilters
           rawData={merchantData}
           txnSearch={txnSearch}
+          showSearch={false}
           setTxnSearch={setTxnSearch}
           statusFilter={statusFilter}
           setStatusFilter={setStatusFilter}
@@ -633,9 +634,9 @@ export const Member = () => {
           selectedMerchant={filterMerchant}
           setSelectedMerchant={setFilterMerchant}
           statusList={["active", "inactive"]}
-          showExport={true}
-          showStatusFilter={true}
-          showDateFilter={true}
+          showExport={false}
+          showStatusFilter={false}
+          showDateFilter={false}
           showSelectUserFilter={false}
           onExportCSV={exportMembersCSV}
           onClearAll={handleClearAll}

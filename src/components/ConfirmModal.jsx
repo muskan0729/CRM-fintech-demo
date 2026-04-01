@@ -35,7 +35,7 @@ export const ConfirmModal = ({
             {/* Header */}
             <div
               className={`text-white rounded-t-lg px-5 py-3 flex justify-between items-center`}
-              style={{ background: "linear-gradient(250deg,#2a91d9,#00418c)" }}
+              style={{  background:"var(--bg-gradient)"}}
             >
               <h3 className="text-lg font-semibold">{heading}</h3>
               <button

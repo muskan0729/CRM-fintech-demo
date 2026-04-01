@@ -34,7 +34,8 @@ const Scheme = () => {
         action: (
           <Button
             onClick={() => handleEdit(item)}
-            className="bg-blue-500 hover:bg-blue-600 text-white text-xs font-medium px-3 py-1.5 rounded-md shadow-md transition"
+            className=" hover:bg-blue-600 text-white text-xs font-medium px-3 py-1.5 rounded-md shadow-md transition"
+          style={{ background:"var(--bg-button)"}}
           >
             Edit
           </Button>
@@ -89,7 +90,7 @@ const Scheme = () => {
     <div className="p-4 space-y-4">
       {/* Header */}
       <div className=" rounded-lg flex justify-between items-center p-2 shadow-md"
-      style={{ background: 'linear-gradient(250deg, #55abe9ff 0%, #00418c 100%)' }}>
+      style={{  background:"var(--bg-gradient)" }}>
         <h4 className="font-bold text-white text-xl">Scheme Manager</h4>
       <Button
   className="bg-white h-8 text-sky-800 font-bold px-4 rounded-lg shadow-md hover:bg-sky-50 hover:border-sky-300 transition-all duration-200"

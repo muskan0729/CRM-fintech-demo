@@ -22,8 +22,10 @@ const [selectedToken, setSelectedToken] = useState("");
 
   const { data } = useAutoFetch("/collection-record");
   // const { execute: executePayin, loading } = usePost("/Airpay/request");
-  const { execute: executePayin, loading } = usePost("/payin/request");
+  const { execute: executePayin, loading } = usePost("/payin/upi/request");
   const { execute: executeCheckStatus } = usePost("/payin/status");
+
+  const [showQrModal, setShowQrModal] = useState(false);
   // console.log("collection records", data);
   // const payin_wallet = collection_data?.data;
 const { data: tokenData } = useAutoFetch("/get-tokens");
@@ -91,6 +93,9 @@ useEffect(() => {
           )}`
         );
         setOrderId(data.data.orderid);
+
+        setShowQrModal(true); 
+
         setShowSuccess(false);
         setShowFailed(false);
       } else {
@@ -111,11 +116,15 @@ useEffect(() => {
       const statusData = await executeCheckStatus(formData);
       if (statusData?.status === "SUCCESS") {
         clearInterval(intervalRef.current);
+          setShowQrModal(false); // ✅ CLOSE QR MODAL
+
         setShowSuccess(true);
         setShowFailed(false);
         setQrUrl("");
       } else if (statusData?.status === "FAILED") {
         clearInterval(intervalRef.current);
+          setShowQrModal(false); // ✅ CLOSE QR MODAL
+
         setShowFailed(true);
         setShowSuccess(false);
         setQrUrl("");
@@ -131,19 +140,19 @@ useEffect(() => {
     /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(payerEmail);
 
   // resret qr
-  const resetPayinState = () => {
-    clearInterval(intervalRef.current);
-    intervalRef.current = null;
+const resetPayinState = () => {
+  clearInterval(intervalRef.current);
+  intervalRef.current = null;
 
-    setQrUrl("");
-    setOrderId("");
-    setShowSuccess(false);
-    setShowFailed(false);
+  setQrUrl("");
+  setOrderId("");
+  setShowQrModal(false); // ✅ important
+  setShowSuccess(false);
+  setShowFailed(false);
 
-    // generate NEW order id
-    const newOrderId = `DSB${Date.now()}${Math.floor(Math.random() * 1000)}`;
-    setPayerOrderId(newOrderId);
-  };
+  const newOrderId = `DSB${Date.now()}${Math.floor(Math.random() * 1000)}`;
+  setPayerOrderId(newOrderId);
+};
 
   return (
     <div className="p-6 space-y-6">
@@ -151,9 +160,11 @@ useEffect(() => {
       {/* <h1>Payin wallet {payingAmount}</h1> */}
 
       <div
-        className="rounded-lg p-4 shadow-md flex items-center"
+        className="rounded-lg p-4 shadow-md flex items-center bg-[var(--bg-gradient)]"
         style={{
-          background: "linear-gradient(250deg, #2a91d9 0%, #0555afff 100%)",
+          // background: "linear-gradient(250deg, #2a91d9 0%, #0555afff 100%)",
+          background:"var(--bg-color)"
+
         }}
       >
         {/* Left Side */}
@@ -175,7 +186,7 @@ useEffect(() => {
       {/* Form */}
       {!qrUrl && !showSuccess && !showFailed && (
         <div className="bg-white shadow-md rounded-lg p-6 space-y-4 border border-gray-200">
-          <div className="grid md:grid-cols-2 gap-6">
+          <div className="grid md:grid-cols-1 gap-6">
             <div className="relative w-full">
               <input
                 type="text"
@@ -243,7 +254,7 @@ useEffect(() => {
             </div>
           </div>
 
-          <div className="grid md:grid-cols-2 gap-6">
+          <div className="grid md:grid-cols-1 gap-6">
             {/* Mobile Number */}
             <div className="relative w-full">
               <input
@@ -346,9 +357,10 @@ useEffect(() => {
               className={`rounded-lg px-6 py-2 shadow-md text-white
                   ${
                     !isFormValid || loading
-                      ? "bg-gray-400 cursor-not-allowed"
-                      : "bg-blue-600 hover:bg-blue-700"
+                      ? " cursor-not-allowed"
+                      : ""
                   }`}
+                  style={{background:"var(--bg-submit)"}}
             >
               {loading ? "Submitting..." : "Submit"}
             </Button>
@@ -357,7 +369,7 @@ useEffect(() => {
       )}
 
       {/* QR Code */}
-      {qrUrl && (
+      {/* {qrUrl && (
         <div className="flex justify-center">
           <div className="bg-white rounded-xl shadow-lg p-6 flex flex-col items-center border border-gray-200">
             <h3 className="text-gray-800 font-semibold text-lg mb-4">
@@ -372,10 +384,10 @@ useEffect(() => {
             </Button>
           </div>
         </div>
-      )}
+      )} */}
 
       {/* Success / Fail */}
-      {showSuccess && (
+      {/* {showSuccess && (
         <div className="flex justify-center">
           <div className="bg-green-100 w-72 h-72 rounded-full shadow-lg flex flex-col items-center justify-center border border-green-300">
             <h2 className="text-green-800 font-bold text-lg">
@@ -392,7 +404,112 @@ useEffect(() => {
             <p className="text-red-600 text-sm mt-1">Please try again</p>
           </div>
         </div>
-      )}
+      )} */}
+
+
+      {showQrModal && (
+  <div className="fixed inset-0 bg-black/50 bg-opacity-50 flex items-center justify-center z-50">
+    <div className="bg-white rounded-xl shadow-lg p-6 w-80 flex flex-col items-center relative">
+
+      {/* Close Button */}
+      <button
+        onClick={() => {
+          setShowQrModal(false);
+          resetPayinState();
+        }}
+        className="absolute top-2 right-2 text-gray-500 hover:text-gray-700 text-xl"
+      >
+        ✕
+      </button>
+
+      <h3 className="text-gray-800 font-semibold text-lg mb-4">
+        Scan to Pay
+      </h3>
+
+      <img src={qrUrl} alt="QR Code" className="w-64 h-64 mb-4" />
+
+      <Button
+        onClick={() => {
+          setShowQrModal(false);
+          resetPayinState();
+        }}
+        className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg"
+      >
+        Cancel
+      </Button>
     </div>
+  </div>
+)}
+
+{/* success modal */}
+{showSuccess && (
+  <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
+    <div className="bg-white rounded-xl shadow-lg p-6 w-80 flex flex-col items-center relative">
+
+      {/* Close */}
+      <button
+        onClick={resetPayinState}
+        className="absolute top-2 right-2 text-gray-500 text-xl"
+      >
+        ✕
+      </button>
+
+      {/* Icon */}
+      <div className="w-20 h-20 rounded-full bg-green-100 flex items-center justify-center mb-4">
+        <span className="text-green-600 text-3xl">✔</span>
+      </div>
+
+      <h2 className="text-green-700 font-bold text-lg">
+        Payment Successful!
+      </h2>
+
+      <Button
+        onClick={resetPayinState}
+        className="mt-4 bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-lg"
+      >
+        Done
+      </Button>
+    </div>
+  </div>
+)}
+
+{/* failed modal */}
+{showFailed && (
+  <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
+    <div className="bg-white rounded-xl shadow-lg p-6 w-80 flex flex-col items-center relative">
+
+      {/* Close */}
+      <button
+        onClick={resetPayinState}
+        className="absolute top-2 right-2 text-gray-500 text-xl"
+      >
+        ✕
+      </button>
+
+      {/* Icon */}
+      <div className="w-20 h-20 rounded-full bg-red-100 flex items-center justify-center mb-4">
+        <span className="text-red-600 text-3xl">✖</span>
+      </div>
+
+      <h2 className="text-red-700 font-bold text-lg">
+        Payment Failed
+      </h2>
+
+      <p className="text-red-500 text-sm mt-1">
+        Please try again
+      </p>
+
+      <Button
+        onClick={resetPayinState}
+        className="mt-4 bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-lg"
+      >
+        Retry
+      </Button>
+    </div>
+  </div>
+)}
+    </div>
+
+    
   );
 };

@@ -252,7 +252,7 @@ const DocumentPreview = ({ label, filePath }) => {
       <div className=" mx-auto">
         {/* Header */}
         <div className="rounded-t-xl shadow-xl/30 p-5 flex justify-between items-center"
-        style={{ background: "linear-gradient(275deg, #9ab5f0ff, #0d3dc4ff)" }}>
+        style={{  background:"var(--bg-gradient)" }}>
           <div>
             <h1 className="text-2xl font-bold text-[#e5e7eb]">
               Verify Merchant

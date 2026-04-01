@@ -31,6 +31,8 @@ import { VerifyMerchant } from "../pages/VerifyMerchant";
 import { PendingVerificationModal } from "../components/PendingVerificationModal";
 import Chargeback from "../pages/Chargeback";
 import VpaToIntent from "../pages/vpa_to_intent";    
+import TxnView from "../components/TxnView";
+
 
 
 const AppRoutes = () => {
@@ -254,6 +256,16 @@ const AppRoutes = () => {
                     </PrivateRoute>
                     }
                 /> 
+                <Route 
+                    path="/txn-view/:id" 
+                    element={
+                        <PrivateRoute>
+                            <TxnView />
+                        </PrivateRoute>
+                    }
+                />
+
+
             </Route>
 
                           <Route

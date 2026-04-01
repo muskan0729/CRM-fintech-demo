@@ -103,7 +103,7 @@ const OnboardBank = () => {
     <div className="p-4 space-y-4">
       {/* Header */}
       <div className=" rounded-lg flex justify-between items-center p-2 shadow-md"
-      style={{ background: 'linear-gradient(250deg, #55abe9ff 0%, #00418c 100%)' }}>
+      style={{  background:"var(--bg-gradient)"}}>
         <h4 className="font-bold text-white text-xl">Onboard Bank</h4>
         <Button
           className="bg-white border border-sky-200 text-sky-800 font-semibold px-4 py-1 rounded-lg shadow-md hover:bg-sky-50 hover:border-sky-300 transition-all duration-200"
@@ -118,7 +118,7 @@ const OnboardBank = () => {
       <div className="flex gap-4">
         <Button
           className={`px-4 py-2 rounded-lg font-medium ${activeTab === "payin"
-              ? "bg-blue-100 text-blue-600 shadow-md"
+              ? "bg-[var(--bg-color)] text-white shadow-md"
               : "bg-white text-gray-600 hover:bg-blue-50 transition"
             }`}
           onClick={() => setActiveTab("payin")}
@@ -127,7 +127,7 @@ const OnboardBank = () => {
         </Button>
         <Button
           className={`px-4 py-2 rounded-lg font-medium ${activeTab === "payout"
-              ? "bg-blue-100 text-blue-600 shadow-md"
+              ? "bg-[var(--bg-color)] text-white shadow-md"
               : "bg-white text-gray-600 hover:bg-blue-50 transition"
             }`}
           onClick={() => setActiveTab("payout")}
