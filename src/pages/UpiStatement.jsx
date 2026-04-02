@@ -419,7 +419,7 @@ const handleAccept = async (row) => {
 
   const upiColumn = [
  {
-  header: "Order Id",
+  header: "Id",
   accessor: "id",
   Cell: ({ row }) => {
      const navigate = useNavigate();
@@ -443,7 +443,7 @@ const handleAccept = async (row) => {
             .toUpperCase();
 
     return (
-      <div className="flex flex-col text-left w-20"
+      <div className="relative flex flex-col text-left w-20 cursor-pointer group"
       //  onClick={() => navigate(`/txn-view/${row.id}`, { state: row })}
        onClick={() => navigate(`/txn-view/${row.id}`)}
        >
@@ -451,7 +451,10 @@ const handleAccept = async (row) => {
         <span>
           <b>{row.id}</b>
         </span>
-
+  {/* Tooltip */}
+  <div className="absolute top-full mb-2 hidden group-hover:block bg-black/50 text-white text-xs rounded px-2 py-1 whitespace-nowrap shadow-lg">
+    click to View Transaction
+  </div>
         {/* Created */}
         <span>
            {formatDate(created)}
@@ -461,7 +464,7 @@ const handleAccept = async (row) => {
         </span>
 
         {/* Updated */}
-        {row.updated_at && (
+        {/* {row.updated_at && (
           <>
             <span className="mt-1">
               Updated at:<br/>
@@ -471,7 +474,7 @@ const handleAccept = async (row) => {
              {formatTime(updated)}
             </span>
           </>
-        )}
+        )} */}
       </div>
     );
   },
@@ -480,11 +483,11 @@ const handleAccept = async (row) => {
       header: "Merchant Details",
       accessor: "merchant_details_text",
       Cell: ({ row }) => (
-        <div className="flex flex-col text-left">
+        <div className="flex flex-col text-left ">
           <span>
-            <b>{row.merchant_name}</b>
+            <b>{row.merchant_name}</b>  
           </span>
-          <span>User ID: {row.user_id ?? "N/A"}</span>
+          {/* <span>User ID: {row.user_id ?? "N/A"}</span> */}
         </div>
       ),
     },
@@ -494,18 +497,18 @@ const handleAccept = async (row) => {
       Cell: ({ row }) => (
         <>
         <div className="flex flex-col text-left">
-          <span>
+          {/* <span>
             Payee VPA: <b>{row.payee_vpa}</b>
           </span>
           <span>
             Ref No: <b>{row.refno}</b>
-          </span>
+          </span> */}
           <span>
             Payee Txnid: <b>{row.mytxnid}</b>
           </span>
-          <span>
+          {/* <span>
             TxnId: <b>{row.txnid}</b>
-          </span>
+          </span> */}
 {role === "admin" && (
   <>
           <span>
@@ -529,14 +532,14 @@ const handleAccept = async (row) => {
       ),
     },
     {
-      header: "Amount / Commission",
+      header: "Amount ",
       accessor: "amount",
       Cell: ({ row }) => (
         <div className="flex flex-col text-left">
           <span>
             Amount: <b>{row.amount}</b>
           </span>
-          <span>
+          {/* <span>
             Charges: <b>{row.charge}</b>
           </span>
           <span>
@@ -544,7 +547,7 @@ const handleAccept = async (row) => {
           </span>
           <span>
             Payin Rolling Amount: <b>{row.payin_rolling_amount}</b>
-          </span>
+          </span> */}
         </div>
       ),
     },
@@ -565,33 +568,33 @@ const handleAccept = async (row) => {
     },
     ...(role === "admin"
     ? [
-{
-  header: "Chargeback",
-  accessor: "chargeback",
-  Cell: ({ row }) => {
-// console.log("chargeback",row);
-    const isAccepted =
-      row.chargeback_status === "accepted" ||
-      acceptedChargebacks.has(row.id);
+// {
+//   header: "Chargeback",
+//   accessor: "chargeback",
+//   Cell: ({ row }) => {
+// // console.log("chargeback",row);
+//     const isAccepted =
+//       row.chargeback_status === "accepted" ||
+//       acceptedChargebacks.has(row.id);
 
-    return isAccepted ? (
-      <span className="px-3 py-1 bg-gray-400 text-white rounded-2xl text-sm">
-        Accepted
-      </span>
-    ) : (
-      <button
-        className="px-3 py-1 bg-purple-500 text-white rounded-2xl"
-        // onClick={() => handleAccept(row)}
-           onClick={() => {
-    setSelectedRow(row);
-    setShowConfirm(true);
-  }}
-      >
-        Accept
-      </button>
-    );
-  },
-}
+//     return isAccepted ? (
+//       <span className="px-3 py-1 bg-gray-400 text-white rounded-2xl text-sm">
+//         Accepted
+//       </span>
+//     ) : (
+//       <button
+//         className="px-3 py-1 bg-purple-500 text-white rounded-2xl"
+//         // onClick={() => handleAccept(row)}
+//            onClick={() => {
+//     setSelectedRow(row);
+//     setShowConfirm(true);
+//   }}
+//       >
+//         Accept
+//       </button>
+//     );
+//   },
+// }
       ]
     : [])
   ];
@@ -613,7 +616,7 @@ const handleAccept = async (row) => {
 >
   {/* LEFT SIDE */}
   <h4 className="font-bold text-white text-xl">
-    UPI Statement
+    Payin Statement
   </h4>
 
   {/* RIGHT SIDE */}

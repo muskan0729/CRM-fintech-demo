@@ -5,6 +5,9 @@ import { MONTH_NAMES, REPORT_STATUSES } from "../constants/Constants";
 import { TableSkeleton } from "../components/TableSkeleton";
 import { setSafeItem, getSafeItem, removeSafeItem } from "../utils/localSecure";
 
+import { useNavigate } from "react-router-dom";
+
+
 const BATCH_SIZE = 5000;
 const FETCH_DELAY = 150;
 const CACHE_TTL_MS = 1000 * 60 * 30; // 30 min
@@ -410,6 +413,8 @@ to_date: formatDateForAPI(endDate, true),
   header: "Order Id",
   accessor: "id",
   Cell: ({ row }) => {
+         const navigate = useNavigate();
+
     const created = new Date(row.created_at);
     const updated = new Date(row.updated_at);
 
@@ -430,11 +435,16 @@ to_date: formatDateForAPI(endDate, true),
             .toUpperCase();
 
     return (
-      <div className="flex flex-col text-left w-20">
+      <div className=" relative cursor-pointer group flex flex-col text-left w-20"
+             onClick={() => navigate(`/txn-view/${row.id}`)}
+>
         {/* Order ID */}
         <span>
           <b>{row.id}</b>
         </span>
+  <div className="absolute top-full mb-2 hidden group-hover:block bg-black/50 text-white text-xs rounded px-2 py-1 whitespace-nowrap shadow-lg">
+    click to View Transaction
+  </div>
 
         {/* Created */}
         <span>{formatDate(created)}</span>
@@ -443,7 +453,7 @@ to_date: formatDateForAPI(endDate, true),
         </span>
 
         {/* Updated */}
-        {row.updated_at && (
+        {/* {row.updated_at && (
           <>
             <span className="mt-1">
               Updated at:<br />
@@ -453,7 +463,7 @@ to_date: formatDateForAPI(endDate, true),
               {formatTime(updated)}
             </span>
           </>
-        )}
+        )} */}
       </div>
     );
   },
@@ -466,7 +476,7 @@ to_date: formatDateForAPI(endDate, true),
           <span>
             <b>{row.merchant_name}</b>
           </span>
-          <span>User ID: {row.user_id ?? "N/A"}</span>
+          {/* <span>User ID: {row.user_id ?? "N/A"}</span> */}
         </div>
       ),
     },
@@ -476,12 +486,12 @@ to_date: formatDateForAPI(endDate, true),
       Cell: ({ row }) => (
         <div className="flex flex-col text-left">
           <span>
-            Holder: <b>{row.holder}</b>
+            Account Holder Name: <b>{row.holder}</b>
           </span>
           <span>
-            Account: <b>{row.account}</b>
+            Account No: <b>{row.account}</b>
           </span>
-          <span>
+          {/* <span>
             IFSC: <b>{row.ifsc}</b>
           </span>
           <span>
@@ -489,7 +499,7 @@ to_date: formatDateForAPI(endDate, true),
           </span>
           <span>
             Mobile: <b>{row.mobile}</b>
-          </span>
+          </span> */}
         </div>
       ),
     },
@@ -499,49 +509,74 @@ to_date: formatDateForAPI(endDate, true),
       Cell: ({ row }) => (
         <div className="flex flex-col text-left">
           <span>
-            Payment Mode: <b>{row.payment_mode}</b>
+            Payment Type: <b>{row.payment_mode}</b>
           </span>
-          <span>
+          {/* <span>
             Ref No: <b>{row.refno}</b>
-          </span>
+          </span> */}
           <span>
             Order ID: <b>{row.mytxnid}</b>
           </span>
-          <span>
+          {/* <span>
             Txnid: <br />
             <b>{row.txnid}</b>
-          </span>
+          </span> */}
         </div>
       ),
     },
     {
-      header: "Amount / Commission",
+      header: "Amount",
       accessor: "pay_amount",
       Cell: ({ row }) => (
         <div className="flex flex-col text-left">
-          <span>
+          {/* <span>
             Opening Wallet Amount: <b>{row.opening_wallet_amount}</b>
-          </span>
+          </span> */}
           <span>
             Pay Amount: <b>{row.pay_amount}</b>
           </span>
-          <span>
+          {/* <span>
             Charges: <b>{row.charges}</b>
           </span>
                     <span>
             GST: <b>{row.gst}</b>
-          </span>
-          <span>
+          </span> */}
+          {/* <span>
             Total Debited Amount: <b>{row.total_debited_amount}</b>
-          </span>
-          <span>
+          </span> */}
+          {/* <span>
             Closing Wallet Amount: <b>{row.closing_wallet_amount}</b>
-          </span>
-          <span>
-            Note: <b>{row.note}</b>
-          </span>
+          </span> */}
+
         </div>
       ),
+    },
+        {
+     header:"openingwallet",
+     accessor:"openingwallet",
+     Cell:({ row }) => (
+                  <span>
+          <b>{row.opening_wallet_amount}</b>
+          </span>
+     ),
+    },
+        {
+     header:"closingwallet",
+     accessor:"Reason",
+     Cell:({ row }) => (
+                  <span>
+          <b>{row.closing_wallet_amount}</b>
+          </span>
+     ),
+    },
+    {
+     header:"Reason",
+     accessor:"Reason",
+     Cell:({ row }) => (
+                  <span>
+          <b>{row.note}</b>
+          </span>
+     ),
     },
     {
       header: "Status",

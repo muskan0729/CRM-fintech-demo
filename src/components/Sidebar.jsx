@@ -58,8 +58,8 @@ const menu = [
     children: [
       { label: "Payin Statement", icon: "fa-arrow-down", link: "/upi-statement" },
       { label: "Payout Statement", icon: "fa-arrow-up", link: "/payout-statement" },
-      { label: "Topup Statement", icon: "fa-wallet", link: "/topup-statement" },
-      { label: "Settlement Payin", icon: "fa-money-check-dollar", link: "/settlement-payin-statement" },
+      { label: "Recharge History", icon: "fa-wallet", link: "/topup-statement" },
+      { label: "Payment Settlement", icon: "fa-money-check-dollar", link: "/settlement-payin-statement" },
     ],
   },
 
