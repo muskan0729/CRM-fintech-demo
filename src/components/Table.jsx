@@ -107,7 +107,7 @@ const paginatedData = useMemo(() => {
     ))
   ) : (
     <div className="text-center py-10 text-gray-400">
-      <img src={nodata} className="mx-auto h-24 opacity-70" />
+      {/* <img src={nodata} className="mx-auto h-24 opacity-70" /> */}
       <p className="mt-2">No data found</p>
     </div>
   )}
