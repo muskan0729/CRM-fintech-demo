@@ -1,0 +1,11 @@
+VITE_API_URL = "https://uatfintech.spay.live/api"
+
+
+
+
+
+# VITE_API_URL = "https://omishajewels.co.in/api"
+
+# VITE_API_URL = "https://dashboard.soulfuloverseas.in/api"
+
+# VITE_API_URL = "http://127.0.0.1:8000/api"

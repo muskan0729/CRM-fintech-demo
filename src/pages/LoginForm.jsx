@@ -6,6 +6,7 @@ import paymentGatewayBg from "../images/logo_bg.png";
 import { usePost } from "../hooks/usePost";
 import { ConfirmModal } from "../components/ConfirmModal";
 import { setSafeItem, getSafeItem, removeSafeItem } from "../utils/localSecure";
+import Kyc_demo from "./Kyc_demo";
 
 const DASHBOARD_LOCK_KEY = "payment_dashboard_logged_in";
 
@@ -189,7 +190,7 @@ const response = await login(payload);
           navigate("/dashboard", { replace: true });
         } else if (user.kyc === 0 && user.pre_kyc === 0) {
           alert("Please complete KYC first!");
-          navigate("/kyc", { replace: true, state: { 
+          navigate("/Kyc_demo", { replace: true, state: { 
                 merchant: {
                 id: user.id,
                 name: user.name,
@@ -342,7 +343,7 @@ const response = await login(payload);
 
         <div style={{ textAlign: "center", marginTop: "15px" }}>
           <button
-            onClick={() => navigate("/register")}
+            onClick={() => navigate("/Kyc_demo")}
             style={{
               background: "none",
               border: "none",

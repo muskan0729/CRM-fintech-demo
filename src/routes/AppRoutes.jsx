@@ -32,6 +32,7 @@ import { PendingVerificationModal } from "../components/PendingVerificationModal
 import Chargeback from "../pages/Chargeback";
 import VpaToIntent from "../pages/vpa_to_intent";    
 import TxnView from "../components/TxnView";
+import Kyc_demo from "../pages/Kyc_demo";
 
 
 
@@ -50,6 +51,10 @@ const AppRoutes = () => {
     <Route 
       path="/kyc" 
       element={<Kyc  />} 
+    />
+        <Route 
+      path="/Kyc_demo" 
+      element={<Kyc_demo  />} 
     />
         <Route 
       path="/PendingVerificationModal" 
