@@ -104,7 +104,7 @@ const OnboardBank = () => {
       {/* Header */}
       <div className=" rounded-lg flex justify-between items-center p-2 shadow-md"
       style={{  background:"var(--bg-gradient)"}}>
-        <h4 className="font-bold text-white text-xl">Onboard Bank</h4>
+        <h4 className="font-bold text-white text-xl uppercase">Onboard Bank</h4>
         <Button
           className="bg-white border border-sky-200 text-sky-800 font-semibold px-4 py-1 rounded-lg shadow-md hover:bg-sky-50 hover:border-sky-300 transition-all duration-200"
           onClick={handleModal}

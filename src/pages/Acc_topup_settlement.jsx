@@ -406,14 +406,14 @@ const exportCSV = async () => {
       Cell: ({ row }) => <span>{row.id}</span>,
     },
     {
-      header: "Merchant Details",
+      header: "Merchant Namr",
       accessor: "merchant_details_text",
       Cell: ({ row }) => (
         <div className="flex flex-col text-left">
           <span>
             <b>{row.merchant_name}</b>
           </span>
-          <span>User ID: {row.user_id ?? "N/A"}</span>
+          {/* <span>User ID: {row.user_id ?? "N/A"}</span> */}
         </div>
       ),
     },
@@ -422,7 +422,7 @@ const exportCSV = async () => {
       accessor: "txnid",
     },
     {
-      header: "Product Type",
+      header: "payment Type",
       accessor: "product_type",
     },
     {
@@ -490,8 +490,8 @@ const exportCSV = async () => {
   }}
 >
   {/* LEFT SIDE */}
-  <h4 className="font-bold text-white text-xl">
-    Topup Settlement Statement
+  <h4 className="font-bold text-white text-xl uppercase">
+    Recharge History
   </h4>
 
   {/* RIGHT SIDE */}

@@ -182,12 +182,12 @@ const response = await login(payload);
         });
 
       if (user.role_type === "admin") {
-        navigate("dashboard", { replace: true });
+        navigate("home", { replace: true });
         return;
       }
 
         if (user.kyc === 1 && user.pre_kyc === 1) {
-          navigate("/dashboard", { replace: true });
+          navigate("/home", { replace: true });
         } else if (user.kyc === 0 && user.pre_kyc === 0) {
           alert("Please complete KYC first!");
           navigate("/Kyc_demo", { replace: true, state: { 
@@ -222,17 +222,18 @@ const response = await login(payload);
 
   // return (
   return (
-  <div style={{ display: "flex", height: "100vh", fontFamily: "Inter, Arial" }}>
+  <div style={{ display: "flex", height: "100vh", fontFamily: "Inter, Arial" ,overflow: "hidden" ,flexDirection: window.innerWidth < 768 ? "column" : "row"}}>
 
     {/* LEFT SIDE (Banner) */}
   <div
   style={{
     flex: 1,
     background: "var(--bg-color)",
-    display: "flex",
     alignItems: "center",
     justifyContent: "center",
-    overflow: "hidden"
+    overflow: "hidden",
+    display: window.innerWidth < 768 ? "none" : "flex", // 👈 hide on mobile
+
   }}
 >
   <img
@@ -248,22 +249,26 @@ const response = await login(payload);
 </div>
 
     {/* RIGHT SIDE (Login Form) */}
-    <div style={{
-      flex: 1,
-      background: "#f9fafb",
-      display: "flex",
-      alignItems: "center",
-      justifyContent: "center"
-    }}>
+<div
+  style={{
+    flex: 1,
+    background: "#f9fafb",
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "center",
+    padding: "2rem"
+  }}
+>
 
-      <div style={{
-        width: "100%",
-        maxWidth: "400px",
-        background: "#fff",
-        padding: "30px",
-        borderRadius: "12px",
-        boxShadow: "0 10px 30px rgba(0,0,0,0.1)"
-      }}>
+<div
+  style={{
+    width: "100%",
+    maxWidth: "500px",     // thoda bada for better balance
+    padding: "2rem",
+    borderRadius: "12px",
+    boxSizing: "border-box",
+  }}
+>
 
         {/* Logo */}
         <div style={{ textAlign: "center", marginBottom: "20px" }}>

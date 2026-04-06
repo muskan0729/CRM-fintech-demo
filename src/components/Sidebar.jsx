@@ -20,13 +20,13 @@ const [openMenu, setOpenMenu] = useState(null);
 
   // MENU CONFIG - unchanged
 const menu = [
-  { label: "Home", icon: "fa-chart-pie", link: "/dashboard" },
+  { label: "Home", icon: "fa-chart-pie", link: "/home" },
 
   ...(role === "admin"
     ? [
         { label: "Scheme", icon: "fa-file-invoice-dollar", link: "/scheme" },
         { label: "Merchant Onboarding", icon: "fa-user-plus", link: "/member-list" },
-        { label: "Wallet Settlement", icon: "fa-wallet", link: "/load-wallet" },
+        { label: "Wallet Settlement", icon: "fa-wallet", link: "/wallet-settlement" },
         // { label: "Payin Settlement", icon: "fa-money-bill-transfer", link: "/payin-settlement" },
         { label: "Bank", icon: "fa-building-columns", link: "/onboard-bank" },
         // { label: "VPA", icon: "fa-at", link: "/vpa" },
@@ -56,18 +56,18 @@ const menu = [
     label: "Transaction History",
     icon: "fa-clock-rotate-left", // history icon
     children: [
-      { label: "Payin Statement", icon: "fa-arrow-down", link: "/upi-statement" },
+      { label: "Payin Statement", icon: "fa-arrow-down", link: "/payin-statement" },
       { label: "Payout Statement", icon: "fa-arrow-up", link: "/payout-statement" },
-      { label: "Recharge History", icon: "fa-wallet", link: "/topup-statement" },
-      { label: "Payment Settlement", icon: "fa-money-check-dollar", link: "/settlement-payin-statement" },
+      { label: "Recharge History", icon: "fa-wallet", link: "/recharge-history" },
+      { label: "Payment Settlement", icon: "fa-money-check-dollar", link: "/settlement-payin" },
     ],
   },
 
   ...(role === "user"
     ? [
-        { label: "Webhook Config", icon: "fa-gears", link: "/api-settings" },
-        { label: "Payin Documents", icon: "fa-file-lines", link: "/payin-doc" },
-        { label: "Payout Documents", icon: "fa-file-lines", link: "/payout-doc" },
+        { label: "Webhook Config", icon: "fa-gears", link: "/webhook-config" },
+        { label: "Payin Documents", icon: "fa-file-lines", link: "/payin-documents" },
+        { label: "Payout Documents", icon: "fa-file-lines", link: "/payout-documents" },
       ]
     : []),
 ];
@@ -122,7 +122,7 @@ className={`fixed top-5 left-5 z-50 p-3 rounded-lg transition-all duration-300
 
         {/* Logo - Larger size restored */}
 <div className="flex-shrink-0 py-6 px-6 flex justify-center border-b border-[var(--bg-color)]/20">
-  <Link to="/dashboard">
+  <Link to="/home">
     <div className="w-20 h-20 md:w-24 md:h-24 bg-white rounded-full flex items-center justify-center shadow-md overflow-hidden">
       <img
         // src={Logo}

@@ -154,7 +154,7 @@
         refreshBenedetails();
       } catch (err) {
         // console.log("error to add beneficiary", err);
-        toast.error("Error to add Beneficiary");
+        toast.error("Error to add Payee");
       } finally {
         setIsLoading(false); // stop loading after response
       }
@@ -192,16 +192,16 @@
       beneficiarydetails: (
         <div className="flex flex-col text-left">
           <span>
-            Beneficiary Name : <b>{row.beneficiary_name || "null"}</b>
+            Payee Name : <b>{row.beneficiary_name || "null"}</b>
           </span>
           <span>
-            Beneficiary Mobile No. : <b>{row.beneficiary_mobile_no || "null"}</b>
+            Payee Mobile No. : <b>{row.beneficiary_mobile_no || "null"}</b>
           </span>
           <span>
-            Beneficiary Email Id : <b>{row.beneficiary_email_id || "null"}</b>
+            Payee Email Id : <b>{row.beneficiary_email_id || "null"}</b>
           </span>
           <span>
-            Beneficiary Address : <b>{row.beneficiary_address || "null"}</b>
+            Payee Address : <b>{row.beneficiary_address || "null"}</b>
           </span>
         </div>
       ),
@@ -223,23 +223,23 @@
       <>
         {/* <div className="bg-gradient-to-t from-sky-500 to-indigo-500 flex justify-between items-center mb-3 p-2.5">
           <h4 className="font-bold text-white text-lg py-2">Beneficiary List</h4> */}
-        <div className="">
+        <div className="m-3">
           <div
             className="
                 flex justify-between items-center 
-                rounded-lg p-3"
+                rounded-lg p-3 "
             style={{
               background:"var(--bg-gradient)"
             }}
           >
-            <h4 className="font-bold text-white text-lg">Beneficiary List</h4>
+            <h4 className="font-bold text-white text-lg">Payee List</h4>
 
             <Button
               type="button"
               className="bg-white border border-sky-200 text-sky-800 font-semibold px-4 py-1 rounded-lg shadow-md hover:bg-sky-50 hover:border-sky-300 transition-all duration-200 cursor-pointer"
               onClick={() => setShowFormModal(true)}
             >
-              + Add New Beneficiary
+              + Add Payee
             </Button>
           </div>
 
@@ -272,7 +272,7 @@
               {/* ✅ Modal Header */}
               <div className=" text-white font-medium rounded-t-lg px-5 py-3 flex justify-between items-center"
               style={{background:"var(--bg-color)"}}>
-                <h3 className="text-lg font-semibold">Payout to Beneficiary</h3>
+                <h3 className="text-lg font-semibold">Payout to Payee</h3>
                 <Button
                   onClick={() => setShowModal(false)}
                   className="flex items-center justify-center w-8 h-8 rounded-full bg-white text-red-500 font-bold text-lg shadow-md hover:bg-red-500 hover:text-white transition"
@@ -460,7 +460,7 @@
                 style={{background:"var(--bg-color)"}}
               >
                 <h4 className="font-bold text-white text-lg py-2">
-                  Add Beneficiary Details
+                  Add Payee Details
                 </h4>
                 <Button
                   onClick={() => setShowFormModal(false)}
@@ -551,7 +551,7 @@
           required
         />
         <label className="absolute text-sm text-gray-500 transform -translate-y-6 scale-75 top-3 origin-[0] peer-focus:text-blue-600">
-          Beneficiary Mobile Number
+          Payee Mobile Number
         </label>
 
         {benephoneError && (
@@ -574,7 +574,7 @@
           required
         />
         <label className="absolute text-sm text-gray-500 transform -translate-y-6 scale-75 top-3 origin-[0] peer-focus:text-blue-600">
-          Beneficiary Name
+          Payee Name
         </label>
       </div>
 
@@ -587,7 +587,7 @@
           placeholder=" "
         />
         <label className="absolute text-sm text-gray-500 transform -translate-y-6 scale-75 top-3 origin-[0] peer-focus:text-blue-600">
-          Beneficiary Address
+          Payee Address
         </label>
       </div>
 
@@ -616,7 +616,7 @@
          
         />
         <label className="absolute text-sm text-gray-500 transform -translate-y-6 scale-75 top-3 origin-[0] peer-focus:text-blue-600">
-          Beneficiary Email
+          Payee Email
         </label>
 
         {beneEmailError && (

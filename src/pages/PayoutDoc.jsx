@@ -1,7 +1,16 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 
 const PayoutDoc = () => {
   const [activeTab, setActiveTab] = useState("request");
+  const [isMobile, setIsMobile] = useState(window.innerWidth < 768);
+
+  useEffect(() => {
+    const handleResize = () => {
+      setIsMobile(window.innerWidth < 768);
+    };
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
 
   const TABS = {
     request: {
@@ -25,7 +34,6 @@ const PayoutDoc = () => {
   "amount": "100.00"
 }`
     },
-
     status: {
       title: "Check Payout Status",
       endpoint: `${import.meta.env.VITE_API_URL}/payout/status`,
@@ -41,7 +49,6 @@ const PayoutDoc = () => {
   "rrn": "123456789"
 }`
     },
-
     callback: {
       title: "Callback Response",
       endpoint: `https://yourdomain.com/payout/callback`,
@@ -62,7 +69,7 @@ const PayoutDoc = () => {
   return (
     <div style={{
       fontFamily: "Inter, Arial",
-      padding: "30px",
+      padding: isMobile ? "15px" : "30px", // 👈 only change for mobile
       background: "#f9fafb",
       minHeight: "100vh"
     }}>
@@ -71,7 +78,8 @@ const PayoutDoc = () => {
       <div style={{
         display: "flex",
         gap: "10px",
-        marginBottom: "25px"
+        marginBottom: "25px",
+        flexWrap: isMobile ? "wrap" : "nowrap" // 👈 wrap only on mobile
       }}>
         {Object.keys(TABS).map(tab => (
           <div
@@ -84,7 +92,9 @@ const PayoutDoc = () => {
               background: activeTab === tab ? "var(--bg-button)" : "#e5e7eb",
               color: activeTab === tab ? "#fff" : "#111",
               fontWeight: 500,
-              transition: "0.2s"
+              transition: "0.2s",
+              flex: isMobile ? "1 1 45%" : "unset", // 👈 responsive tabs
+              textAlign: "center"
             }}
           >
             {tab.toUpperCase()}
@@ -95,12 +105,17 @@ const PayoutDoc = () => {
       {/* Card */}
       <div style={{
         background: "#fff",
-        padding: "25px",
+        padding: isMobile ? "15px" : "25px", // 👈 mobile padding
         borderRadius: "12px",
         boxShadow: "0 4px 20px rgba(0,0,0,0.05)"
       }}>
 
-        <h2 style={{ marginBottom: "20px" }}>{activeApi.title}</h2>
+        <h2 style={{
+          marginBottom: "20px",
+          fontSize: isMobile ? "18px" : "22px" // 👈 responsive text
+        }}>
+          {activeApi.title}
+        </h2>
 
         {/* Endpoint */}
         <div style={{ marginBottom: "15px" }}>
@@ -109,7 +124,8 @@ const PayoutDoc = () => {
             background: "#f3f4f6",
             padding: "10px",
             borderRadius: "6px",
-            fontFamily: "monospace"
+            fontFamily: "monospace",
+            wordBreak: "break-all" // 👈 fix overflow
           }}>
             {activeApi.endpoint}
           </div>
@@ -139,12 +155,20 @@ const PayoutDoc = () => {
               marginBottom: "20px"
             }}>
               {activeApi.parameters.map((p, i) => (
-                <div key={i} style={{
-                  display: "flex",
-                  justifyContent: "space-between",
-                  padding: "10px 15px",
-                  borderBottom: i !== activeApi.parameters.length - 1 ? "1px solid #eee" : "none"
-                }}>
+                <div
+                  key={i}
+                  style={{
+                    display: "flex",
+                    flexDirection: isMobile ? "column" : "row", // 👈 key change
+                    justifyContent: "space-between",
+                    padding: "10px 15px",
+                    gap: isMobile ? "4px" : "0",
+                    borderBottom:
+                      i !== activeApi.parameters.length - 1
+                        ? "1px solid #eee"
+                        : "none"
+                  }}
+                >
                   <span style={{ fontWeight: 600 }}>{p.field}</span>
                   <span style={{ color: "#6b7280" }}>{p.desc}</span>
                 </div>
@@ -163,7 +187,7 @@ const PayoutDoc = () => {
               padding: "15px",
               borderRadius: "8px",
               overflowX: "auto",
-              fontSize: "14px"
+              fontSize: isMobile ? "12px" : "14px" // 👈 responsive font
             }}>
               {activeApi.request}
             </pre>
@@ -177,7 +201,8 @@ const PayoutDoc = () => {
           color: "#fff",
           padding: "15px",
           borderRadius: "8px",
-          fontSize: "14px"
+          fontSize: isMobile ? "12px" : "14px",
+          overflowX: "auto"
         }}>
           {activeApi.response}
         </pre>

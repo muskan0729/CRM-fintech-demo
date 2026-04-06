@@ -229,7 +229,7 @@ const handlePayinSubmit = async (e) => {
       {/* Header */}
       <div className=" rounded-lg flex justify-between items-center p-4 shadow-md"
       style={{  background:"var(--bg-gradient)" }}>
-        <h4 className="font-bold text-white text-xl">Wallet Settlement</h4>
+        <h4 className="font-bold text-white text-xl Wallet Settlement">Wallet Settlement</h4>
       </div>
 
       {/* Table */}

@@ -87,7 +87,7 @@ const AppRoutes = () => {
                     }
                 />
                 <Route 
-                    path="/dashboard" 
+                    path="/home" 
                     element={
                         <PrivateRoute>
                             <Dashboard />
@@ -123,7 +123,7 @@ const AppRoutes = () => {
                 />
                
                 <Route
-                    path="/load-wallet"
+                    path="/wallet-settlement"
                     element={
                     <PrivateRoute role={"admin"}>
                         <Loadwallet />
@@ -174,7 +174,7 @@ const AppRoutes = () => {
                 }
                 />
                 <Route
-                    path="/upi-statement"
+                    path="/payin-statement"
                     element={
                     <PrivateRoute>
                         <UpiStatement />
@@ -222,7 +222,7 @@ const AppRoutes = () => {
                     }
                 />
                 <Route
-                    path="/payin-doc"
+                    path="/payin-documents"
                     element={
                     <PrivateRoute role={"user"}>
                         <Payindoc />
@@ -230,7 +230,7 @@ const AppRoutes = () => {
                     }
                 />
                 <Route
-                    path="/payout-doc"
+                    path="/payout-documents"
                     element={
                     <PrivateRoute role={"user"}>
                         <PayoutDoc />
@@ -238,7 +238,7 @@ const AppRoutes = () => {
                     }
                 />
                 <Route
-                    path="/topup-statement"
+                    path="/recharge-history"
                     element={
                     <PrivateRoute>
                         <Acc_topup_settlement />
@@ -246,7 +246,7 @@ const AppRoutes = () => {
                     }
                 />
                 <Route
-                    path="/settlement-payin-statement"
+                    path="/settlement-payin"
                     element={
                     <PrivateRoute>
                         <Acc_upi_setlement />
@@ -254,7 +254,7 @@ const AppRoutes = () => {
                     }
                 />
                 <Route
-                    path="/api-settings"
+                    path="/webhook-config"
                     element={
                     <PrivateRoute>
                         <ApiSetting />

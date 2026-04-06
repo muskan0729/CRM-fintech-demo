@@ -480,7 +480,7 @@ const handleAccept = async (row) => {
   },
 },
     {
-      header: "Merchant Details",
+      header: "Merchant Name",
       accessor: "merchant_details_text",
       Cell: ({ row }) => (
         <div className="flex flex-col text-left ">
@@ -492,7 +492,7 @@ const handleAccept = async (row) => {
       ),
     },
     {
-      header: "Transaction Details",
+      header: "TXN Details",
       accessor: "txnid",
       Cell: ({ row }) => (
         <>
@@ -511,13 +511,13 @@ const handleAccept = async (row) => {
           </span> */}
 {role === "admin" && (
   <>
-          <span>
+          {/* <span>
             Airpay id: <b>{row.apitxnid}</b>
           </span>    
 
           <span>
             MID: <b>{row.mid}</b>
-          </span> 
+          </span>  */}
           <span>
             product: <b>{row.product}</b>
           </span>  
@@ -615,7 +615,7 @@ const handleAccept = async (row) => {
   }}
 >
   {/* LEFT SIDE */}
-  <h4 className="font-bold text-white text-xl">
+  <h4 className="font-bold text-white text-xl uppercase">
     Payin Statement
   </h4>
 

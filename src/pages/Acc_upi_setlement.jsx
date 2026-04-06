@@ -492,8 +492,8 @@ const exportCSV = async () => {
   }}
 >
   {/* LEFT SIDE */}
-  <h4 className="font-bold text-white text-xl">
-  Payin Settlement Statement  </h4>
+  <h4 className="font-bold text-white text-xl uppercase">
+  Payment Settlement </h4>
 
   {/* RIGHT SIDE */}
   <button

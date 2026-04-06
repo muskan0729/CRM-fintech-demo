@@ -1,7 +1,16 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 
 const PayinDoc = () => {
   const [activeTab, setActiveTab] = useState("request");
+  const [isMobile, setIsMobile] = useState(window.innerWidth < 768);
+
+  useEffect(() => {
+    const handleResize = () => {
+      setIsMobile(window.innerWidth < 768);
+    };
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
 
   const TABS = {
     request: {
@@ -43,7 +52,7 @@ const PayinDoc = () => {
   return (
     <div style={{
       fontFamily: "Inter, Arial",
-      padding: "30px",
+      padding: isMobile ? "15px" : "30px", // 👈 mobile padding only
       background: "#f9fafb",
       minHeight: "100vh"
     }}>
@@ -52,7 +61,8 @@ const PayinDoc = () => {
       <div style={{
         display: "flex",
         gap: "10px",
-        marginBottom: "25px"
+        marginBottom: "25px",
+        flexWrap: isMobile ? "wrap" : "nowrap" // 👈 wrap on mobile
       }}>
         {["request", "status"].map(tab => (
           <div
@@ -65,7 +75,9 @@ const PayinDoc = () => {
               background: activeTab === tab ? "var(--bg-button)" : "#e5e7eb",
               color: activeTab === tab ? "#fff" : "#111",
               fontWeight: 500,
-              transition: "0.2s"
+              transition: "0.2s",
+              flex: isMobile ? "1 1 45%" : "unset", // 👈 responsive tabs
+              textAlign: "center"
             }}
           >
             {tab === "request" ? "Create Request" : "Check Status"}
@@ -73,15 +85,20 @@ const PayinDoc = () => {
         ))}
       </div>
 
-      {/* Card Container */}
+      {/* Card */}
       <div style={{
         background: "#fff",
-        padding: "25px",
+        padding: isMobile ? "15px" : "25px",
         borderRadius: "12px",
         boxShadow: "0 4px 20px rgba(0,0,0,0.05)"
       }}>
 
-        <h2 style={{ marginBottom: "15px" }}>{activeApi.title}</h2>
+        <h2 style={{
+          marginBottom: "15px",
+          fontSize: isMobile ? "18px" : "22px"
+        }}>
+          {activeApi.title}
+        </h2>
 
         {/* Endpoint */}
         <div style={{ marginBottom: "15px" }}>
@@ -90,7 +107,8 @@ const PayinDoc = () => {
             background: "#f3f4f6",
             padding: "10px",
             borderRadius: "6px",
-            fontFamily: "monospace"
+            fontFamily: "monospace",
+            wordBreak: "break-all" // 👈 prevent overflow
           }}>
             {activeApi.endpoint}
           </div>
@@ -118,12 +136,20 @@ const PayinDoc = () => {
           marginBottom: "20px"
         }}>
           {activeApi.parameters.map((p, i) => (
-            <div key={i} style={{
-              display: "flex",
-              justifyContent: "space-between",
-              padding: "10px 15px",
-              borderBottom: i !== activeApi.parameters.length - 1 ? "1px solid #eee" : "none"
-            }}>
+            <div
+              key={i}
+              style={{
+                display: "flex",
+                flexDirection: isMobile ? "column" : "row", // 👈 main fix
+                justifyContent: "space-between",
+                padding: "10px 15px",
+                gap: isMobile ? "4px" : "0",
+                borderBottom:
+                  i !== activeApi.parameters.length - 1
+                    ? "1px solid #eee"
+                    : "none"
+              }}
+            >
               <span style={{ fontWeight: 600 }}>{p.field}</span>
               <span style={{ color: "#6b7280" }}>{p.desc}</span>
             </div>
@@ -138,7 +164,7 @@ const PayinDoc = () => {
           padding: "15px",
           borderRadius: "8px",
           overflowX: "auto",
-          fontSize: "15px"
+          fontSize: isMobile ? "12px" : "15px" // 👈 responsive font
         }}>
           {activeApi.request}
         </pre>
@@ -150,7 +176,8 @@ const PayinDoc = () => {
           color: "white",
           padding: "15px",
           borderRadius: "8px",
-          fontSize: "15px"
+          fontSize: isMobile ? "12px" : "15px",
+          overflowX: "auto"
         }}>
           {activeApi.response}
         </pre>

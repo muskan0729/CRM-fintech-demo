@@ -611,12 +611,12 @@ export const Member = () => {
           />
         </div>
 
-        <Button
+        {/* <Button
           onClick={() => navigate("/member-create")}
           className="bg-white border border-sky-200 text-sky-800 font-semibold px-4 py-2 rounded-lg shadow-md hover:bg-sky-50 hover:border-sky-300 transition-all duration-200"
         >
           + Create New
-        </Button>
+        </Button> */}
       </div>
 
       {!initialLoad && (

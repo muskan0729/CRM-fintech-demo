@@ -410,7 +410,7 @@ to_date: formatDateForAPI(endDate, true),
 
   const payoutColumn = [
 {
-  header: "Order Id",
+  header: " Id",
   accessor: "id",
   Cell: ({ row }) => {
          const navigate = useNavigate();
@@ -469,7 +469,7 @@ to_date: formatDateForAPI(endDate, true),
   },
 },
     {
-      header: "Merchant Details",
+      header: "Merchant Name",
       accessor: "merchant_details_text",
       Cell: ({ row }) => (
         <div className="flex flex-col text-left">
@@ -504,7 +504,7 @@ to_date: formatDateForAPI(endDate, true),
       ),
     },
     {
-      header: "Reference Details",
+      header: "order id Details",
       accessor: "payment_mode",
       Cell: ({ row }) => (
         <div className="flex flex-col text-left">
@@ -600,11 +600,11 @@ to_date: formatDateForAPI(endDate, true),
 <div
   className="rounded-lg flex justify-between items-center p-4 shadow-md"
   style={{
-    background: "var(--bg-gradient)",
+    background: "var(--bg-gradient)", 
   }}
 >
   {/* LEFT SIDE */}
-  <h4 className="font-bold text-white text-xl">
+  <h4 className="font-bold text-white text-xl uppercase">
     Payout Statement
   </h4>
 
