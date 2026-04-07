@@ -1,11 +1,11 @@
 // src/pages/Login.jsx
 import React, { useState, useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
-import logo from "../images/logo.png";
+import logo from "../images/logo_crown.png";
 import paymentGatewayBg from "../images/logo_bg.png";
 import { usePost } from "../hooks/usePost";
-import { ConfirmModal } from "../components/ConfirmModal";
-import { setSafeItem, getSafeItem, removeSafeItem } from "../utils/localSecure";
+import {  toast } from "sonner";
+
 import Kyc_demo from "./Kyc_demo";
 
 const DASHBOARD_LOCK_KEY = "payment_dashboard_logged_in";
@@ -128,20 +128,6 @@ const handleChange = (e) => {
     ...formData,
     [name]: value,
   });
-  // if (name === "mobile_no") {
-  //   // Allow only numbers and max 10 digits
-  //   const cleanedValue = value.replace(/\D/g, "").slice(0, 10);
-
-  //   setFormData({
-  //     ...formData,
-  //     [name]: cleanedValue,
-  //   });
-  // } else {
-  //   setFormData({
-  //     ...formData,
-  //     [name]: value,
-  //   });
-  // }
 };
 
   const handleSubmit = async (e) => {
@@ -164,13 +150,6 @@ const response = await login(payload);
         localStorage.setItem("user", JSON.stringify(response.user));
         localStorage.setItem("user_id", JSON.stringify(response.user.id));
 
- 
-        // setSafeItem("token", response.token);
-        // setSafeItem("email", response.user.mobile_no);
-        // setSafeItem("login_id", response.user.login_id);
-        // setSafeItem("role", btoa(response.user.role_type));
-        // setSafeItem("user", JSON.stringify(response.user));
-
         localStorage.setItem(
           DASHBOARD_LOCK_KEY,
           JSON.stringify({ userId: response.user.id, tabId: TAB_ID })
@@ -187,6 +166,7 @@ const response = await login(payload);
       }
 
         if (user.kyc === 1 && user.pre_kyc === 1) {
+          toast.success("Login successful 🎉");
           navigate("/home", { replace: true });
         } else if (user.kyc === 0 && user.pre_kyc === 0) {
           alert("Please complete KYC first!");
@@ -215,7 +195,8 @@ const response = await login(payload);
     } catch (err) {
       console.log("Login failed:", err);
         if (/^\d+$/.test(formData.login_id)) {
-    alert("Please login using your email.");
+    // alert("Please login using your email.");
+      toast.error("Invalid credentials ");
   }
     }
   };
@@ -271,12 +252,10 @@ const response = await login(payload);
 >
 
         {/* Logo */}
-        <div style={{ textAlign: "center", marginBottom: "20px" }}>
+        <div style={{ display: "flex",   justifyContent: "center", marginBottom: "20px"}}>
           <img 
-          // src={logo} 
-        src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAKYAAACUCAMAAAAu5KLjAAAAY1BMVEX///9gYGBdXV1aWlpjY2NXV1dRUVH4+PhUVFRmZmb7+/v19fWFhYV0dHTw8PDj4+PX19fQ0NCwsLClpaW4uLhubm7Kysqenp6MjIyUlJRMTEy/v79GRkZAQEDp6end3d18fHzg3ykLAAAGp0lEQVR4nO2ci3KrIBCGcQEF7/drqr7/Ux4wSXNpaBIB0zPjP9OZmqbpV1iWZXcVoV27du3atWvXrl27du3atV6+F4/JlGV1naVJMsbep4F+ypvqsgvnijsYU4qxQ6q5bcps/DusQVJ2s0MZYxjAOQvkC5SHRT36nyYUGsu5wtd8NwLATtXWwWcZ43o+uI8BLyJO33fp50jHghwYJ4qBvAblfR8N46cgXSBPEU+gBNxq2H5EkwL35FXIRdz5qoZ4U0i/jOjLI3kZUozDbEPKqaXPDfKhMDRbDahfMvr2SH6r59sM6Ni5znpKhwArNvD3qeNqQC6gh9C2b/IHyjQpBac7p3Yxc4y1KQUndWxyBsVBn3HhxGywRuk1Giv8TkBLW5jN0yjjHfV2HJNXfBkbyyOnlXkv9Zf4rcCGo697s5ByvXPj/jNx3g81nnK6reENPg5N+MufnIVZzIaZh5ScX7VJytoOpRA2OO1xRC1REtYZC5f8wrQvuuKkxrxnag1SCM+mpj00t5U/kJubocwMb5J3wpUZJx9hm5RiFRkZzqHnVjHFwSrRp/RCu5ByLzIwnNnKE/kbwlw/C9rZ8uwXkS9t3xnbH0zh4kNdzMHowUIh3msuIq+1P+dyODUXUVJtQCnOG7Ne6nOwuk9eRLRm3WtsBO0PxLRO7aPljfJbtNPBTJ0N/NGiSic6HhSHC7i/JJzcVjT4XWKecP6r+bg6YVKjyGXeM8iS2o0VY0ZvzQWLN/yWvXV1UgvhY0wezjdMUZeXeRM5JzKAucnzIjxfi027LcqyaLna0nWiOf/x50IYj5efAOTHY0I8RIv7wqcCkJd2yxmKsHZaLM+fOmVpgXbrw4/48U4JoR98YwJkyM+KphBs8Yzl2CZoHJqinIQ/64mgbHyUlE1TJsjPVZsaDdcfiZLDwzmH0LtgCo/ndZi5jLUJSisAJ0VTxISgRoELIq4IUM3lG0iN/FYx7zCvX0OKU9A1JhUfX/TLoqKt5zdUeMBxpst1JX9EcI0mWWAnjvwPMsVoQrQes34Bs0STyxeLI+4gKGBC+dGNEdoNHcZh7J9XIha/GCqss5pWYw4vTHqG8rM7EAOZRCCoFgMEAPeLcbfwR3xCA56gToHJ1xcN8v4pphiEb+eKZxRHkb+kciBaVBG3ROk5NQqQokKBSdY7zvyx27zChCq5HEMWTPFVYQdY7Hue509ELLHsXP+QmLnKJa3PzT0fTbgZzRCNVbQkxoDWWZalKJGjmZ0/BhzxblW7hU3MG9tkDZo4D7zFNjGGPvQSmWkdz04dothrPzGap5W+fEtwhkqABBWnlS4IE+m3Lyu9EaGhCnO9bZa/rPTTX6NtgLoDl26RhZ7XYsnNMSGybSKVKXvpLL+kYyUOTtGg2tY1Vvpzv0kc4SzFRFJKsdhtxF4IfERZJa6pnMZE7ugBGhwsXhCLOeEq06zWHzNSFaaP0qMGinmGvCwv8sGTzl16zwCNZVGILbwOxlP9PDm+MCoPqjqYk2rSA89fhBJGMC+Px8IxPw4VbtMlIIpzN0tkmYZ1pwipnpWRnM6eHiuCdx6dVQkwcKtOhJed457tlYaFuOYMV9FiGQyLF/JiZupDvwxQ1sonqngGnwSnSyZs88rqpCXK6++eNGm8v7axUJ1SwWyvNnAnrVxsY7xQqZLWWUh1srSAqZP2mF7o0zMiqDQoj4ebLYRbHUyv2QhTL4cktuBtljrXy8NOm+Q3wdHMb3obVAhMVLD+j9w7ilU92AZFxCFKV439WecGWiky+y4Jc/3e6GC2Pu1GKuqZa7kC7JgpqEd2Xbyherrt7gQw1J2AWqvhnGuqkTO1SYkjU50zviLlZUAgs7SmZLOrqzHYBF/b2tmBGm2NLCxVgg9mG2Lj2QYn6RujlP9LNyy6ZKbNiVUWbsopD4b3dqyRef2N02wKBOxQyuVukpIZbSu+UqAqr78vAsa28p/yxbwbASWW7PKs/PVbK3+jZHYp5YFYP0jmbmT57ivZ56VtoBa8+k+NrVYcQrBbbHPT+kDWeyagGoXzNzV1dJWFEoeSYsPbgL2BH953TRz3Ybrtrf9BSd67eVXWMOd6++cTjAX5cl6ORjg+bH3b91lxTl+M7oiA/OADFPy6rTB+kmMCDFWz2fJ+LG8qW0IZg/v2vsUcCTBGq6b+zGMTbuWPdRNWtL+pWsqyJnNp1ObZX2A8KRizoejCihPZfyT7OaOwK4b0Dz7RZXnmTDKlWZZOSTIG3l94OsquXbt27dq1a9euXbt2PdQ/agFqM4H+mcAAAAAASUVORK5CYII="
-
-          alt="company logo" style={{ width: "100px" }} />
+          src={logo} 
+          alt="company logo" style={{ width: "140px",  textAlign:"center"}} />
         </div>
 
         <h2 style={{ textAlign: "center", marginBottom: "10px" }}>

@@ -159,7 +159,12 @@ const transactionData = useMemo(() => {
     }
 
     return {
-      txnid: item.txnid || "—",
+      // txnid: item.txnid || "—",
+      txnid: (
+  <div className="break-all max-w-[150px]">
+    {item.txnid || "—"}
+  </div>
+),
       name: `${item.user?.name ?? "N/A"} (${item.user_id ?? "N/A"})`,
       type: item.product || "—",
       amount: item.amount,
@@ -326,7 +331,7 @@ const lineChartData = useMemo(() => monthwiseData || [], [monthwiseData]);
 
         {/* table  */}
         <div className="mt-4 rounded-3xl bg-white shadow-[0_10px_40px_rgb(0,0,0,0.06)]  overflow-hidden">
-     <div className="px-6 py-5 bg-[#033b44] ">
+     <div className="px-6 py-5 bg-[#033b44] mb-4">
   
   <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 
                   bg-white rounded-xl px-6 py-4 shadow-sm">

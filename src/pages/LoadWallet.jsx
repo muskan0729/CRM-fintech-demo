@@ -142,7 +142,7 @@ const handleLoadMore = () => {
    ),
  
    action: (
-  <div className="flex flex-col items-start gap-2">
+  <div className="flex flex-row items-start gap-2 w-100">
     <Button
             onClick={() => {
         setSelectedMerchant(row);

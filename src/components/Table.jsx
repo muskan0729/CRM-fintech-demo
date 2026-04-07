@@ -84,7 +84,7 @@ const paginatedData = useMemo(() => {
                 {col.header}
               </span>
 
-              <span className="text-[#033b44] font-medium mt-1">
+              <span className="text-[#033b44] font-medium mt-7">
                 {col.Cell
                   ? col.Cell({ value: row[col.accessor], row })
                   : row[col.accessor]}

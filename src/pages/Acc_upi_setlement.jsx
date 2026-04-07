@@ -422,6 +422,11 @@ const exportCSV = async () => {
     {
       header: "Transaction Id",
       accessor: "txnid",
+             Cell: ({ row }) => (
+        <div className="break-all max-w-[150px]">
+          {row.txnid || "—"}
+        </div>
+       ),
     },
     {
       header: "Product Type",
