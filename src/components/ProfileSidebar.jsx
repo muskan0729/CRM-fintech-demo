@@ -11,7 +11,8 @@ export const ProfileSidebar = ({
   payingAmount,
   Payoutwallet,
   PayinTotalCharges,
-  PayinRollingAmount
+  PayinRollingAmount,
+  mid
 
 }) => {
   const [PayAmountVisible, setPayAmountVisible] = useState(false);
@@ -178,9 +179,13 @@ export const ProfileSidebar = ({
               <p className="text-xl font-bold text-white tracking-tight">
                 {displayName}
               </p>
+              <p className="text-xl text-white mt-1 opacity-90 truncate max-w-[240px] font-bold">
+                {mid}
+              </p>              
               <p className="text-sm text-white mt-1 opacity-90 truncate max-w-[240px]">
                 {displayEmail}
               </p>
+
             </div>
           </div>
         </div>

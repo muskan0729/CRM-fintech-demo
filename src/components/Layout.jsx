@@ -18,7 +18,7 @@ const payingAmount = merchantData?.data?.payin_wallet ?? "0.00";
 const PayinRollingAmount = merchantData?.data?.rolling_amount ?? "0.00";
 const PayinTotalCharges = merchantData?.data?.total_charges ?? "0.00";
   const [role, setRole] = useState(atob(localStorage.getItem("role"))); // admin / user / crypto
-
+const mid = merchantData?.data?.mid ?? "N/A";
 
 const openProfile = () => {
   setProfileOpen(true);
@@ -37,6 +37,7 @@ const openProfile = () => {
   Payoutwallet={Payoutwallet}   // ✅ IMPORTANT
   PayinRollingAmount={PayinRollingAmount}
   PayinTotalCharges={PayinTotalCharges}
+  mid={mid}
 />
 
       {/* Main Content */}
