@@ -320,16 +320,16 @@ const DocumentPreview = ({ label, filePath }) => {
               <p className="text-gray-500">CIN/LLPIN</p>
               <p className="font-medium">{merchant.cin_llpin}</p>
             </div>
-            <div>
+            {/* <div>
               <p className="text-gray-500">Company Type</p>
               <p className="font-medium capitalize">{merchant.company_type}</p>
-            </div>
-            <div>
+            </div> */}
+            {/* <div>
               <p className="text-gray-500">Incorporation Date</p>
               <p className="font-medium">
                 {new Date(merchant.date_of_incorporation).toLocaleDateString()}
               </p>
-            </div>
+            </div> */}
             <div>
               <p className="text-gray-500">Account Holder</p>
               <p className="font-medium">{merchant.account_holder_name}</p>
@@ -345,21 +345,21 @@ const DocumentPreview = ({ label, filePath }) => {
           </div>
 
           {/* Documents */}
-          <h2 className="text-lg font-semibold text-[#1d3a96]  mb-4">Uploaded Documents</h2>
+          {/* <h2 className="text-lg font-semibold text-[#1d3a96]  mb-4">Uploaded Documents</h2>
           <div className="grid  p-7 bg-white grid-cols-1 md:grid-cols-3 gap-6 mb-8">
             <DocumentPreview label="Company PAN" filePath={merchant.company_pan_no_doc} />
             <DocumentPreview label="GST Document" filePath={merchant.company_gst_no_doc} />
             <DocumentPreview label="Cancelled Cheque" filePath={merchant.cancel_cheque_doc} />
-          </div>
+          </div> */}
 
           {/* Video KYC */}
-          <h2 className="text-lg font-semibold text-[#1d3a96] mb-4">Video KYC</h2>
+          {/* <h2 className="text-lg font-semibold text-[#1d3a96] mb-4">Video KYC</h2>
           <div className="mb-8  p-7 bg-white">
             <DocumentPreview label="Video Recording" filePath={merchant.video_kyc} />
-          </div>
+          </div> */}
 
           {/* Directors */}
-          {merchant.director_info && merchant.director_info.length > 0 && (
+          {/* {merchant.director_info && merchant.director_info.length > 0 && (
             <>
               <h2 className="text-lg font-semibold text-gray-800 mb-4">
                 Directors ({merchant.director_info.length})
@@ -398,7 +398,7 @@ const DocumentPreview = ({ label, filePath }) => {
                 </div>
               ))}
             </>
-          )}
+          )} */}
 
           {/* Actions */}
        

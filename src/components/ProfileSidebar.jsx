@@ -176,12 +176,12 @@ export const ProfileSidebar = ({
             </div>
 
             <div>
-              <p className="text-xl font-bold text-white tracking-tight">
+              <p className="text-xl text-white mt-1 opacity-90 truncate max-w-[240px] font-bold">
+                MID : {mid}
+              </p>              
+              <p className="text-md font-semibold text-white tracking-tight">
                 {displayName}
               </p>
-              <p className="text-xl text-white mt-1 opacity-90 truncate max-w-[240px] font-bold">
-                {mid}
-              </p>              
               <p className="text-sm text-white mt-1 opacity-90 truncate max-w-[240px]">
                 {displayEmail}
               </p>

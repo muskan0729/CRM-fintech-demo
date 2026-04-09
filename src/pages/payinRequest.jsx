@@ -15,8 +15,10 @@ export const PayinRequest = () => {
   const [qrUrl, setQrUrl] = useState("");
   const [showSuccess, setShowSuccess] = useState(false);
   const [showFailed, setShowFailed] = useState(false);
-  const [tokens, setTokens] = useState([]);
-const [selectedToken, setSelectedToken] = useState("");
+//   const [tokens, setTokens] = useState([]);
+// const [selectedToken, setSelectedToken] = useState("");
+const [mid, setMid] = useState("");
+
 
   const intervalRef = useRef(null);
 
@@ -28,12 +30,22 @@ const [selectedToken, setSelectedToken] = useState("");
   const [showQrModal, setShowQrModal] = useState(false);
   // console.log("collection records", data);
   // const payin_wallet = collection_data?.data;
-const { data: tokenData } = useAutoFetch("/get-tokens");
+// const { data: tokenData } = useAutoFetch("/get-tokens");
+// useEffect(() => {
+//   if (tokenData?.data) {
+//     setTokens(tokenData.data);
+//   }
+// }, [tokenData]);
+
+const { data: merchantData } = useAutoFetch("/show-merchant");
+
 useEffect(() => {
-  if (tokenData?.data) {
-    setTokens(tokenData.data);
+  if (merchantData?.data?.mid) {
+    setMid(merchantData.data.mid);
   }
-}, [tokenData]);
+}, [merchantData]);
+
+
   const payingAmount = data?.PayingAmount ?? "0.00";
   // Generate unique order ID on mount
   useEffect(() => {
@@ -78,7 +90,7 @@ useEffect(() => {
     }
     try {
       const payload = {
-        token :selectedToken,
+        mid :mid,
         name: payerName,
         phone: payerMobile,
         email: payerEmail,
@@ -169,7 +181,7 @@ const resetPayinState = () => {
       >
         {/* Left Side */}
         <div className="flex-1">
-          <h4 className="text-white font-bold text-xl">Load Wallet</h4>
+          <h4 className="text-white font-bold text-xl">Payin Request</h4>
         </div>
 
         {/* Right Side */}
@@ -329,7 +341,7 @@ const resetPayinState = () => {
               </label>
             </div>
 
-            <div className="relative w-full">
+            {/* <div className="relative w-full">
   <select
     value={selectedToken}
     onChange={(e) => setSelectedToken(e.target.value)}
@@ -347,7 +359,22 @@ const resetPayinState = () => {
   <label className="absolute -top-3 text-blue-600 text-xs">
     Token
   </label>
+</div> */}
+
+
+<div className="relative w-full">
+  <input
+    type="text"
+    value={mid}
+    readOnly
+    className="block w-full border-b-2 border-gray-300 py-2 px-0 text-gray-900 bg-transparent focus:outline-none"
+  />
+
+  <label className="absolute -top-3 text-blue-600 text-xs">
+    MID
+  </label>
 </div>
+
           </div>
 
           <div className="flex justify-center mt-4">

@@ -506,7 +506,7 @@ export const Member = () => {
     { header: "Payin Wallet", accessor: "walletpayin" },
     { header: "Payout Wallet", accessor: "walletpayout" },
     { header: "Payin Onboarded Bank", accessor: "payin_bank" },
-    { header: "Action", accessor: "action", width: "220px" },
+    // { header: "Action", accessor: "action", width: "220px" },
   ];
 
   const tableDataWithActions = filteredMerchantData.map((row) => ({
@@ -539,24 +539,24 @@ export const Member = () => {
         <span className="text-xs text-blue-400 font-semibold mt-1">{row.kyc}</span>
       </div>
     ),
-    action: (
-      <ActionDropdown
-        merchantId={row.id}
-        merchant={row}
-        onFundReturn={(merchant) => {
-          setSelectedMerchant(merchant);
-          setShowWalletModal(true);
-        }}
-        onPayinSettlement={(merchant) => {
-          setSelectedMerchant(merchant);
-          setShowPayinModal(true);
-        }}
-        onScheme={(merchant) => {
-          setSelectedMerchant(merchant);
-          setShowModal(true);
-        }}
-      />
-    ),
+    // action: (
+    //   <ActionDropdown
+    //     merchantId={row.id}
+    //     merchant={row}
+    //     onFundReturn={(merchant) => {
+    //       setSelectedMerchant(merchant);
+    //       setShowWalletModal(true);
+    //     }}
+    //     onPayinSettlement={(merchant) => {
+    //       setSelectedMerchant(merchant);
+    //       setShowPayinModal(true);
+    //     }}
+    //     onScheme={(merchant) => {
+    //       setSelectedMerchant(merchant);
+    //       setShowModal(true);
+    //     }}
+    //   />
+    // ),
   }));
 
   const totalPages = Math.ceil(tableDataWithActions.length / itemsPerPage);

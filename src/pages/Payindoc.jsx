@@ -15,7 +15,7 @@ const PayinDoc = () => {
   const TABS = {
     request: {
       title: "Create Payin Request",
-      endpoint: `${import.meta.env.VITE_API_URL}/payin/upi/request`,
+      endpoint: `https://test.co.in/api/payin/upi/request`,
       headers: "Content-Type: application/json",
       parameters: [
         { field: "mid", desc: "mid share by crownpe " },
@@ -24,7 +24,7 @@ const PayinDoc = () => {
         { field: "email", desc: "Customer email" },
         { field: "phone", desc: "Customer mobile" },
       ],
-      request: `curl --location '${import.meta.env.VITE_API_URL}/payin/upi/request'
+      request: `curl --location 'https://test.co.in/api/payin/upi/request'
       --form 'mid="XXXXX"
       --form 'orderid="TESTXXXX3117xX"
       --form 'amount="10.00"
@@ -75,18 +75,15 @@ const PayinDoc = () => {
       }
     ]
   },
-
-
-
     status: {
       title: "Check Payment Status",
-      endpoint: `${import.meta.env.VITE_API_URL}/payin/status`,
+      endpoint: `https://test.co.in/api/payin/status`,
       headers: "multipart/form-data",
       parameters: [
         { field: "mid", desc: "mid" },
         { field: "orderid", desc: "Transaction ID" },
       ],
-      request: `curl --location '${import.meta.env.VITE_API_URL}/payin/status'
+      request: `curl --location 'https://test.co.in/api/payin/status'
       --form mid="XXXMWw"
       --form orderid="xi2TpoHXXXX0mSQU"`,
 successResponse: `{
@@ -106,14 +103,14 @@ failedResponse: `{
 }`
     },
 
-callback: {
+Callback: {
   title: "Payment Callback (Webhook)",
   endpoint: "Your Callback URL (provided by you)",
   headers: "Content-Type: application/json",
 
   successResponse: `{
   "status": "success",
-  "txnid": "SPAYXXX0004",
+  "txnid": "TESTYXXX0004",
   "clienttxnid": "YUVXXXXX",
   "amount": "1.00",
   "transactionid": "6408204XXX",
@@ -122,7 +119,7 @@ callback: {
 
   failedResponse: `{
   "status": "failed",
-  "txnid": "SPAY2025XXXX",
+  "txnid": "TEST2025XXXX",
   "clienttxnid": "TXN0XXX59",
   "amount": "1.00",
   "transactionid": "6544XXX39",
@@ -151,7 +148,7 @@ Make sure your API is publicly accessible and responds with HTTP 200.`
         marginBottom: "25px",
         flexWrap: isMobile ? "wrap" : "nowrap" // 👈 wrap on mobile
       }}>
-        {["request", "status","callback"].map(tab => (
+        {["request", "status","Callback"].map(tab => (
           <div
             key={tab}
             onClick={() => setActiveTab(tab)}
@@ -167,7 +164,7 @@ Make sure your API is publicly accessible and responds with HTTP 200.`
               textAlign: "center"
             }}
           >
-            {tab === "request" ? "Create Request" : tab === "status" ? "Check Status":"callback"}
+            {tab === "request" ? "Create Request" : tab === "status" ? "Check Status":"Callback Response"}
           </div>
         ))}
       </div>
@@ -201,60 +198,55 @@ Make sure your API is publicly accessible and responds with HTTP 200.`
           </div>
         </div>
 
-        {/* Headers */}
-        <div style={{ marginBottom: "20px" }}>
-          <div style={{ fontSize: "14px", color: "#6b7280" }}>HEADERS</div>
-          <div style={{
-            background: "#f3f4f6",
-            padding: "10px",
-            borderRadius: "6px",
-            fontFamily: "monospace"
-          }}>
-            {activeApi.headers}
-          </div>
-        </div>
+{activeTab !== "Callback" && (
+  <>
+    {/* Headers */}
+    <div style={{ marginBottom: "20px" }}>
+      <div style={{ fontSize: "14px", color: "#6b7280" }}>HEADERS</div>
+      <div style={{
+        background: "#f3f4f6",
+        padding: "10px",
+        borderRadius: "6px",
+        fontFamily: "monospace"
+      }}>
+        {activeApi.headers}
+      </div>
+    </div>
 
-        {/* Parameters */}
+    {/* Parameters */}
+    {activeApi.parameters && activeApi.parameters.length > 0 && (
+      <>
         <h4 style={{ marginBottom: "10px" }}>Parameters</h4>
+
         <div style={{
           border: "1px solid #eee",
           borderRadius: "8px",
           overflow: "hidden",
           marginBottom: "20px"
         }}>
-  {activeApi.parameters && activeApi.parameters.length > 0 && (
-  <>
-    <h4 style={{ marginBottom: "10px" }}>Parameters</h4>
-
-    <div style={{
-      border: "1px solid #eee",
-      borderRadius: "8px",
-      overflow: "hidden",
-      marginBottom: "20px"
-    }}>
-      {activeApi.parameters.map((p, i) => (
-        <div
-          key={i}
-          style={{
-            display: "flex",
-            flexDirection: isMobile ? "column" : "row",
-            justifyContent: "space-between",
-            padding: "10px 15px",
-            gap: isMobile ? "4px" : "0",
-            borderBottom:
-              i !== activeApi.parameters.length - 1
-                ? "1px solid #eee"
-                : "none"
-          }}
-        >
-          <span style={{ fontWeight: 600 }}>{p.field}</span>
-          <span style={{ color: "#6b7280" }}>{p.desc}</span>
+          {activeApi.parameters.map((p, i) => (
+            <div
+              key={i}
+              style={{
+                display: "flex",
+                flexDirection: isMobile ? "column" : "row",
+                justifyContent: "space-between",
+                padding: "10px 15px",
+                borderBottom:
+                  i !== activeApi.parameters.length - 1
+                    ? "1px solid #eee"
+                    : "none"
+              }}
+            >
+              <span style={{ fontWeight: 600 }}>{p.field}</span>
+              <span style={{ color: "#6b7280" }}>{p.desc}</span>
+            </div>
+          ))}
         </div>
-      ))}
-    </div>
+      </>
+    )}
   </>
 )}
-        </div>
 
         {/* Request */}
         {(activeTab === "request" || activeTab === "status") && (
@@ -290,7 +282,7 @@ Make sure your API is publicly accessible and responds with HTTP 200.`
         </>
         )}
  {/* ✅ For STATUS tab */}
-{(activeTab === "status" || activeTab === "callback")&&  (
+{(activeTab === "status" || activeTab === "Callback")&&  (
   <>
     {/* Success */}
     <div style={{ marginTop: "10px" }}>
@@ -327,11 +319,12 @@ Make sure your API is publicly accessible and responds with HTTP 200.`
     </div>
   </>
 )}       
-{activeTab === "callback" && (
+{activeTab === "Callback" && (
   <div style={{
     background: "#fef3c7",
     padding: "12px",
     borderRadius: "8px",
+    marginTop:"15px",
     marginBottom: "15px",
     fontSize: isMobile ? "12px" : "14px",
     color: "#92400e"

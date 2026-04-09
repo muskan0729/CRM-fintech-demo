@@ -181,24 +181,22 @@ const response = await login(payload);
               from: "login",
             } });
         } else if (user.pre_kyc === 1 && user.kyc === 0) {
-          setModalHeading(
-            user.kyc_rejected === 1 ? "KYC Rejected" : "KYC Pending Approval"
-          );
-          setModalBody(
-            user.kyc_rejected === 1
-              ? "Your KYC has been rejected by the admin. Please contact support or re-submit your documents."
-              : "Your KYC has been submitted successfully. Please wait up to 24 hours for admin approval."
-          );
-          setprekycmodal(true);
-        }
+  toast.info(
+    user.kyc_rejected === 1
+      ? "KYC Rejected. Please re-submit documents."
+      : "KYC Pending. Wait for approval."
+  );
+}
       }
     } catch (err) {
-      console.log("Login failed:", err);
-        if (/^\d+$/.test(formData.login_id)) {
-    // alert("Please login using your email.");
-      toast.error("Invalid credentials ");
+  console.log("Login failed:", err);
+
+  if (/^\d+$/.test(formData.login_id)) {
+    toast.error("Please login using your email");
+  } else {
+    toast.error("Invalid credentials");
   }
-    }
+}
   };
 
   // return (
